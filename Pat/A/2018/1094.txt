@@ -1,0 +1,71 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <queue>
+#pragma warning(disable:4996)
+#define MAX 105
+using namespace std;
+bool vis[MAX];
+vector<int> mems[MAX];
+int n, m;
+int ans = 1;
+int level = 1;
+
+void BFS(int root){
+	queue<int> line;
+	line.push(root);
+	int sum = 0;
+	vis[root] = true;
+	int tail = root;
+	int tail_temp = root;
+	int cnt = 1;
+
+	while (!line.empty()){
+		int temp = line.front();
+		line.pop();
+		int size = mems[temp].size();
+		for (int i = 0; i < size; i++){
+			int next = mems[temp][i];
+			if (!vis[next]){
+				line.push(next);
+				tail_temp = next;
+				sum++;
+				vis[next] = true;
+			}
+		}
+		if (temp == tail){
+			cnt++;
+			tail = tail_temp;
+			if (ans < sum){
+				ans = sum;
+				level = cnt;
+			}
+			sum = 0;
+		}
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < m; i++){
+		int id, k;
+		scanf("%d%d", &id, &k);
+		for (int j = 0; j < k; j++){
+			int child;
+			scanf("%d", &child);
+			mems[id].push_back(child);
+			mems[child].push_back(id);
+		}
+	}
+
+	BFS(1);
+
+	printf("%d %d", ans, level);
+	system("pause");
+	return 0;
+}

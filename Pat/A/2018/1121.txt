@@ -1,0 +1,58 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int IDs[1000000];
+bool In[1000000];
+int Guest[MAX];
+
+int main()
+{
+	scanf("%d", &n);
+	fill(IDs, IDs + 1000000, -1);
+	for (int i = 0; i < n; i++){
+		int id1, id2;
+		scanf("%d%d", &id1, &id2);
+		IDs[id1] = id2;
+		IDs[id2] = id1;
+	}
+	int m;
+	scanf("%d", &m);
+	vector<int> ins;
+	for (int i = 0; i < m; i++){
+		int in;
+		scanf("%d", &in);
+		In[in] = 1;
+		Guest[i] = in;
+	}
+	vector<int> out;
+	for (int i = 0; i < m; i++){
+		if (IDs[Guest[i]] == -1)
+			out.push_back(Guest[i]);
+		else if (!In[IDs[Guest[i]]])
+			out.push_back(Guest[i]);
+	}
+	sort(out.begin(), out.end());
+	printf("%d\n", out.size());
+	for (int i = 0; i < out.size(); i++){
+		if (i == out.size()-1)
+			printf("%05d\n", out[i]);
+		else
+			printf("%05d ", out[i]);
+	}
+
+	system("pause");
+	return 0;
+}

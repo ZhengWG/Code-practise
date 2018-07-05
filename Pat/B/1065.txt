@@ -1,0 +1,44 @@
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+
+int main(){
+	vector<int> couple(100000, -1);
+	vector<int> Couple_Absent(100000, 0);
+	int num_couple;
+	cin >> num_couple;
+	for (int i = 0; i < num_couple; i++){
+		int a, b;
+		cin >> a >> b;
+		couple[a] = b;
+		couple[b] = a;
+	}
+	int num_guest;
+	cin >> num_guest;
+	vector<int>guest(num_guest, -1);
+	for (int i = 0; i < num_guest; i++){
+		cin >> guest[i];
+		if (couple[guest[i]] != -1)
+			Couple_Absent[couple[guest[i]]] = 1;
+ 	}
+	vector<int> guest_alone;
+	for (int i = 0; i < num_guest; i++){
+		if (!Couple_Absent[guest[i]]){
+			guest_alone.push_back(guest[i]);
+		}
+	}
+	sort(guest_alone.begin(), guest_alone.end());
+	cout << guest_alone.size() << endl;
+	for (vector<int>::iterator it = guest_alone.begin(); it != guest_alone.end(); it++){
+		if (it == guest_alone.begin())
+			cout << setfill('0') << setw(5) << *it;	
+		else
+			cout <<" "<< setfill('0') << setw(5) << *it;
+	}
+	
+}
+

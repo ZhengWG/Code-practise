@@ -1,0 +1,131 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <queue>
+#pragma warning(disable:4996)
+long long fen1[2], fen2[2];
+long long out[3];
+using namespace std;
+
+long long gcd(long long a, long long b){
+	long long r;
+	while (b){
+		r = a%b;
+		a = b;
+		b = r;
+	}
+	return a;
+}
+
+void sum(long long* a, long long* b, int flag){
+	long long gc = gcd(a[1], b[1]);
+	long long fenmu1 = a[1] * b[1] / gc;
+	long long fenzi1 = b[1] / gc * a[0];
+	long long fenzi2 = a[1] / gc * b[0];
+
+	out[0] = fenzi1 + fenzi2 * flag;
+	out[1] = fenmu1;
+}
+
+void diffe(long long* a, long long* b, int flag){
+	long long fenmu1;
+	long long fenmu2;
+	long long fenzi1;
+	long long fenzi2;
+	if (!flag){
+		//除
+		fenmu1 = a[1];
+		fenmu2 = b[0];
+		fenzi1 = a[0];
+		fenzi2 = b[1];
+	}
+	else{
+		//乘
+		fenmu1 = a[1];
+		fenmu2 = b[1];
+		fenzi1 = a[0];
+		fenzi2 = b[0];
+	}
+	out[0] = fenzi1 * fenzi2;
+	out[1] = fenmu1 * fenmu2;
+}
+
+void Print(long long* word){
+	long long fenzi = word[0];
+	long long fenmu = word[1];
+	if (fenmu == 0){
+		printf("Inf");
+		return;
+	}
+	if (fenzi == 0){
+		printf("0");
+		return;
+	}
+
+	long long gc = gcd(word[0], word[1]);
+	fenzi /= gc;
+	fenmu /= gc;
+
+	if ((fenzi<0 && fenmu>0) || (fenzi>0 && fenmu<0)){
+		printf("(-");
+	}
+
+	if (abs(fenzi) >= abs(fenmu)){
+		long long mod = fenzi / fenmu;
+		long long yu = fenzi % fenmu;
+		if (yu)
+			printf("%lld %lld/%lld", abs(mod), abs(yu), abs(fenmu));
+		else
+			printf("%lld", abs(mod));
+	}
+	else{
+		printf("%lld/%lld", abs(fenzi), abs(fenmu));
+	}
+	if (fenzi*fenmu<0){
+		printf(")");
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%lld/%lld", &fen1[0], &fen1[1]);
+	scanf("%lld/%lld", &fen2[0], &fen2[1]);
+
+	sum(fen1, fen2, 1);
+	Print(fen1);
+	printf(" + ");
+	Print(fen2);
+	printf(" = ");
+	Print(out);
+	printf("\n");
+	fill(out, out + 3, '\0');
+	sum(fen1, fen2, -1);
+	Print(fen1);
+	printf(" - ");
+	Print(fen2);
+	printf(" = ");
+	Print(out);
+	printf("\n");
+	fill(out, out + 3, '\0');
+	diffe(fen1, fen2, 1);
+	Print(fen1);
+	printf(" * ");
+	Print(fen2);
+	printf(" = ");
+	Print(out);	printf("\n");
+	fill(out, out + 3, '\0');
+	diffe(fen1, fen2, 0);
+	Print(fen1);
+	printf(" / ");
+	Print(fen2);
+	printf(" = ");
+	Print(out);
+	printf("\n");
+
+	system("pause");
+	return 0;
+}

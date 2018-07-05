@@ -1,0 +1,27 @@
+#include <iostream>
+//感觉题目不是很好
+
+
+using namespace std;
+
+int a, b, c;
+int A, B, C;
+
+int main(){
+
+	scanf("%d.%d.%d", &a, &b, &c);
+	scanf("%d.%d.%d", &A, &B, &C);
+
+	int sum_c = (c + C);
+	int sum_b = (b + B);
+	int sum_a = (a + A);
+	if (sum_c >= 29)
+		sum_b++;
+	if (sum_b >= 17)
+		sum_a++;
+	
+	printf("%d.%d.%d", sum_a, sum_b%17, sum_c%29);
+
+	system("pause");
+	return 0;
+}

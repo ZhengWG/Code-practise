@@ -1,0 +1,37 @@
+#include <string>
+#include <vector>
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+	string password;
+	int num;
+	cin >> password;
+	cin >> num;
+	bool flag = 0;
+	int i = 0;
+	string input_word;
+	getchar();//吸收回车
+	getline(cin, input_word);//得到每行字符，包含回车
+	while (input_word != "#"){
+		i++;
+		if (password == input_word){
+			flag = 1;
+			break;
+		}
+		else
+			cout << "Wrong password: " << input_word <<endl;
+		if (i == num){
+			cout << "Account locked";
+			break;
+		}
+		getline(cin, input_word);//得到每行字符，包含回车
+	}
+
+	if (flag)
+		cout << "Welcome in";
+	system("pause");
+}
+

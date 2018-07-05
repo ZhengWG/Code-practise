@@ -1,0 +1,104 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 110
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int nums[MAX], Ins[MAX], Mer[MAX],out[MAX];
+
+bool Judge(int a[], int b[]){
+	for (int i = 0; i < n; i++){
+		if (a[i + 1] != b[i + 1])
+			return false;
+	}
+	return true;
+}
+
+void Print(int a[]){
+	for (int i = 1; i <= n; i++){
+		if (i == n)
+			printf("%d\n", a[i]);
+		else
+			printf("%d ", a[i]);
+	}
+}
+
+void megerarray(int a[], int l1, int r1, int l2, int r2){
+	int i = l1, j = l2;
+	int nc = r1, m = r2;
+	int k = 0;
+	int temp[MAX];
+	while (i <= nc&&j <= m){
+		if (a[i] < a[j])
+			temp[k++] = a[i++];
+		else
+			temp[k++] = a[j++];
+	}
+	while (i<=nc)
+		temp[k++] = a[i++];
+	while (j<=m)
+		temp[k++] = a[j++];
+	for (int q = 0; q < k; q++){
+		a[l1+q] = temp[q];
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i+1]);
+		Ins[i + 1] = nums[i + 1];
+		Mer[i + 1] = nums[i + 1];
+	}
+	for (int i = 0; i < n; i++){
+		scanf("%d", &out[i + 1]);
+	}
+	bool flag = false;
+	for (int i = 1; i <= n; i++){
+		int j = i;
+		while (j>0 && Ins[j] > Ins[j + 1]){
+			swap(Ins[j], Ins[j + 1]);
+			j--;
+		}
+		if (flag){
+			printf("Insertion Sort\n");
+			Print(Ins);
+			break;
+		}
+		if (Judge(Ins, out)){
+			flag = true;
+		}
+	}
+	if (!flag){
+		for (int step = 2; step / 2 <= n; step *= 2){
+			for (int i = 1; i <= n; i+=step){
+				int mid = i + step / 2 - 1;
+				if (mid + 1 <= n){
+					megerarray(Mer, i, mid, mid + 1, min(i + step - 1, n));
+				}
+			}
+			if (flag){
+				printf("Merge Sort\n");
+				Print(Mer);
+				break;
+			}
+			if (Judge(out, Mer))
+				flag = true;
+		}
+	}
+
+
+	system("pause");
+	return 0;
+}

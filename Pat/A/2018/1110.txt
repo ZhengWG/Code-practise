@@ -1,0 +1,93 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 50
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+struct Node{
+	int lchild;
+	int rchild;
+	int fchild;
+}nodes[MAX];
+int cnt = 1;
+int flag = 1;
+int out;
+void BFS(int root){
+	queue<int> qu;
+	qu.push(root);
+	while (!qu.empty()){
+		int a = qu.front();
+		out = a;
+		qu.pop();
+		if (nodes[a].lchild != -1){
+			qu.push(nodes[a].lchild);
+			cnt++;
+		}
+		else{
+			if (cnt != n){
+				flag = 0;
+				return;
+			}
+		}
+		if (nodes[a].rchild != -1){
+			qu.push(nodes[a].rchild);
+			cnt++;
+		}
+		else{
+			if (cnt != n){
+				flag = 0;
+				return;
+			}
+		}
+	}
+	return;
+}
+
+int main()
+{
+	for (int i = 0; i < MAX; i++){
+		nodes[i].fchild = -1;
+		nodes[i].lchild = -1;
+		nodes[i].rchild = -1;
+	}
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		char ld[3], rd[3];
+		scanf("%s %s", &ld, &rd);
+		string l = ld;
+		string r = rd;
+		if (l != "-"){
+			nodes[i].lchild = atof(l.c_str());
+			nodes[int(atof(l.c_str()))].fchild = i;
+		}
+		if (r != "-"){
+			nodes[i].rchild = atof(r.c_str());
+			nodes[int(atof(r.c_str()))].fchild = i;
+		}
+	}
+	int root = 0;
+	for (int i = 0; i < n; i++){
+		if (nodes[i].fchild == -1){
+			root = i;
+			break;
+		}
+	}
+	BFS(root);
+	if (flag){
+		printf("YES %d", out);
+	}
+	else
+		printf("NO %d", root);
+
+	system("pause");
+	return 0;
+}

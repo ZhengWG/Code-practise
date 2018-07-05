@@ -1,0 +1,119 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 100000
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int k, n;
+struct Node{
+	int data;
+	Node* lchild;
+	Node* rchild;
+	int nums;
+};
+Node* newNode(int x){
+	Node* root = new Node;
+	root->data = x;
+	root->lchild = NULL;
+	root->rchild = NULL;
+	return root;
+}
+void insert(Node* &root, int x){
+	if (root == NULL){
+		root = newNode(x);
+		return;
+	}
+	if (abs(x) < abs(root->data)){
+		insert(root->lchild, x);
+	}
+	else{
+		insert(root->rchild, x);
+	}
+	return;
+}
+
+int node_tmp;
+int node_max;
+bool flag;
+bool Is;
+void DFS(Node* root){
+	if (root->lchild != NULL){
+		if (root->data < 0 && root->lchild->data < 0){
+			Is = 0;
+			return;
+		}
+		if (root->lchild->data > 0)
+			node_tmp++;
+		DFS(root->lchild);
+		if (root->lchild->data > 0)
+			node_tmp--;
+	}
+	else{
+		if (node_tmp != node_max && flag){
+			node_max = node_tmp;
+			flag = 0;
+		}
+		else if (node_tmp != node_max && !flag){
+			Is = 0;
+		}
+	}
+	if (root->rchild != NULL){
+		if (root->data < 0 && root->rchild->data < 0){
+			Is = 0;
+			return;
+		}
+		if (root->rchild->data > 0)
+			node_tmp++;
+		DFS(root->rchild);
+		if (root->rchild->data > 0)
+			node_tmp--;
+	}
+	else{
+		if (node_tmp != node_max && flag){
+			node_max = node_tmp;
+			flag = 0;
+		}
+		else if (node_tmp != node_max && !flag){
+			Is = 0;
+		}
+	}
+}
+
+int main()
+{
+	scanf("%d", &k);
+	for (int i = 0; i < k; i++){
+		scanf("%d", &n);
+		Node* ro = NULL;
+		for (int j = 0; j < n; j++){
+			int num;
+			scanf("%d", &num);
+			insert(ro, num);
+		}
+		if (ro->data < 0)
+			printf("No\n");
+		else{
+			node_max = -1;
+			node_tmp = 0;
+			flag = 1;
+			Is = 1;
+			DFS(ro);
+			if (Is)
+				printf("Yes\n");
+			else
+				printf("No\n");
+		}
+	}
+	
+	system("pause");
+	return 0;
+}

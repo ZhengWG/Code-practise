@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#define MAX 110
+//注意数字很大无法依次读取
+
+using namespace std;
+
+char out[10][6] = { { 'z', 'e', 'r', 'o', '\0', '\0' },
+{ 'o', 'n', 'e', '\0', '\0', '\0' },
+{ 't', 'w', 'o', '\0', '\0', '\0' },
+{ 't', 'h', 'r', 'e', 'e', '\0' },
+{ 'f', 'o', 'u', 'r', '\0', '\0' },
+{ 'f', 'i', 'v', 'e', '\0', '\0' },
+{ 's', 'i', 'x', '\0', '\0', '\0' },
+{ 's', 'e', 'v', 'e', 'n', '\0' },
+{ 'e', 'i', 'g', 'h', 't', '\0' },
+{ 'n', 'i', 'n', 'e', '\0', '\0' },
+
+};
+
+void Print(int n){
+	switch (n)
+	{
+	case 0:
+		printf(out[0]);
+		break;
+	case 1:
+		printf(out[1]);
+		break;
+	case 2:
+		printf(out[2]);
+		break;
+	case 3:
+		printf(out[3]);
+		break;
+	case 4:
+		printf(out[4]);
+		break;
+	case 5:
+		printf(out[5]);
+		break;
+	case 6:
+		printf(out[6]);
+		break;
+	case 7:
+		printf(out[7]);
+		break;
+	case 8:
+		printf(out[8]);
+		break;
+	case 9:
+		printf(out[9]);
+		break;
+	default:
+		break;
+	}
+
+}
+
+int main(){
+	char temp;
+	long long sum = 0;
+
+	while ((temp = getchar()) != '\n' && temp != EOF){
+		sum += temp - '0';
+	}
+
+	int yu;
+	long long chu;
+	yu = sum % 10;
+	chu = sum / 10;
+	vector <int> wei;
+	wei.push_back(yu);
+	while (chu){
+		yu = chu % 10;
+		chu = chu / 10;
+		wei.push_back(yu);
+	}
+
+	for (int i = wei.size() - 1; i > 0; i--){
+		Print(wei[i]);
+		printf(" ");
+	}
+	if (wei.size()>0)
+		Print(wei[0]);
+
+	system("pause");
+	return 0;
+}

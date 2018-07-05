@@ -1,0 +1,75 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10000
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n, m, k;
+int G[MAX][MAX];
+struct PER{
+	int id;
+	bool Is_boy;
+	vector<int> friends;
+}pers[MAX];
+
+struct Node{
+	int a, b;
+	Node(int m, int n) :a(m), b(n){}
+};
+
+bool cmp(Node n1, Node n2){
+	if (n1.a == n2.a)
+		return n1.b < n2.b;
+	return n1.a < n2.a;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < m; i++){
+		string id1, id2;
+		cin >> id1 >> id2;
+		int a = abs(atoi(id1.c_str()));
+		int b = abs(atoi(id2.c_str()));
+		if (id1.length() == id2.length()){
+			pers[a].friends.push_back(b);
+			pers[b].friends.push_back(a);
+		}
+		G[a][b] = 1;
+		G[b][a] = 1;
+	}
+	scanf("%d", &k);
+	for (int i = 0; i < k; i++){
+		int id1, id2;
+		scanf("%d%d", &id1, &id2);
+		id1 = abs(id1);
+		id2 = abs(id2);
+		vector<Node> Path;
+		for (int j = 0; j < pers[id1].friends.size(); j++){
+			for (int q = 0; q < pers[id2].friends.size(); q++){
+				if (pers[id1].friends[j] == id2 || pers[id2].friends[q] == id1)
+					continue;
+				if (G[pers[id1].friends[j]][pers[id2].friends[q]]){
+					Path.push_back(Node(pers[id1].friends[j], pers[id2].friends[q]));
+				}
+			}
+		}
+		sort(Path.begin(), Path.end(),cmp);
+		printf("%d\n", Path.size());
+		for (int j = 0; j < Path.size(); j++){
+			printf("%04d %04d\n", abs(Path[j].a), abs(Path[j].b));
+		}
+	}
+
+	system("pause");
+	return 0;
+}

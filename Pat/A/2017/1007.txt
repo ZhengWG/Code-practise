@@ -1,0 +1,72 @@
+#include <iostream>
+
+using namespace std;
+
+typedef struct Maxi* Pmax;
+struct Maxi{
+	int maxi;
+	int pre;
+	int post;
+	int final_mem;
+	int first_mem;
+};
+
+int k;
+int main(){
+	scanf("%d", &k);
+
+	int pre;
+	int post;
+	Pmax maxi = new struct Maxi;
+	if (k){
+		int num;
+		scanf("%d", &num);
+		maxi->maxi = num;
+		maxi->pre = num;
+		maxi->post = num;
+		maxi->first_mem = num;
+	}
+
+	int maxi_temp = maxi->maxi;
+	int pre_temp = maxi->pre;
+	int post_temp = maxi->post;
+	for (int i = 1; i < k; i++){
+		int num;
+		scanf("%d", &num);
+
+		if (maxi_temp > 0){
+			maxi_temp = maxi_temp + num;
+			pre_temp = pre_temp;
+			post_temp = num;
+		}
+		else{
+			maxi_temp = num;
+			pre_temp = num;
+			post_temp = num;
+		}
+
+		if (maxi_temp > maxi->maxi){
+			maxi->maxi = maxi_temp;
+			maxi->pre = pre_temp;
+			maxi->post = post_temp;
+		}
+		if (i == k - 1)
+			maxi->final_mem = num;
+
+	}
+
+	if (maxi->maxi < 0){
+		printf("0 ");
+		printf("%d ", maxi->first_mem);
+		printf("%d", maxi->final_mem);
+	}
+	else{
+		printf("%d ", maxi->maxi);
+		printf("%d ", maxi->pre);
+		printf("%d", maxi->post);
+	}
+
+	system("pause");
+
+	return 0;
+}

@@ -1,0 +1,79 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <set>
+#include <string>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <stack>
+#define MAX 100020
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int nums[MAX];
+stack<int> s;
+int lowbit(int i){
+	return (i)&(-i);
+}
+int Getsum(int x){
+	int sum = 0;
+	for (int i = x; i > 0; i-=lowbit(i)){
+		sum += nums[i];
+	}
+	return sum;
+}
+
+void update(int x, int v){
+	for (int i = x; i < MAX; i += lowbit(i)){
+		nums[i] += v;
+	}
+}
+
+void Peek(){
+	int left=1, right=MAX-1;
+	int k = (s.size()+1) / 2;
+	int mid;
+	while (left < right){
+		mid = (left + right) / 2;
+		if (Getsum(mid) >= k)
+			right = mid;
+		else
+			left = mid + 1;
+	}
+	printf("%d\n",left);
+}
+
+int main(){
+	scanf("%d", &n);
+	int temp;
+	char str[15];
+	for (int i = 0; i < n; i++){
+		scanf("%s", str);
+		if (str[1] == 'o'){
+			if (s.empty()){
+				printf("Invalid\n");
+			}
+			else{
+				printf("%d\n", s.top());
+				update(s.top(), -1);
+				s.pop();
+			}
+		}
+		else if (str[1] == 'u'){
+			scanf("%d", &temp);
+			s.push(temp);
+			update(temp, 1);
+		}
+		else{
+			if (!s.empty())
+				Peek();
+			else
+				printf("Invalid\n");
+		}
+	}
+
+	system("pause");
+	return 0;
+}

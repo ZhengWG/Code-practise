@@ -1,0 +1,71 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 50010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n, k;
+struct Node{
+	int v;
+	int nums;
+	Node(int a, int b) :v(a), nums(b){}
+	bool operator < (const Node &n1)const{
+		if (nums == n1.nums)
+			return v < n1.v;
+		return nums > n1.nums;
+	}
+};
+set<Node> out;
+map<int, int> match;
+int main()
+{
+	scanf("%d%d", &n, &k);
+	int m = 1;
+	for (int i = 0; i < n; i++){
+		int input;
+		scanf("%d", &input);
+		if (i){
+			printf("%d:", input);
+			int wei = 0;
+			set<Node>::iterator it = out.begin();
+			for (int i = 0; i < out.size(); i++){
+				if (wei >= k)
+					break;
+				printf(" %d", it->v);
+				it++;
+				wei++;
+			}
+			printf("\n");
+			if (!match[input]){
+				match[input] = 1;
+				Node node(input, match[input]);
+				out.insert(node);
+			}
+			else{
+				Node node(input, match[input]);
+				out.erase(node);
+				match[input]++;
+				node.nums++;
+				out.insert(node);
+			}
+		}
+		else{
+			match[input] = 1;
+			Node node(input, 1);
+			out.insert(node);
+		}
+		//
+	}
+
+	system("pause");
+	return 0;
+}

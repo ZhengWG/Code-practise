@@ -1,0 +1,111 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 1010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+bool vis[10000];
+int father[10000];
+struct Per{
+	int id;
+	int num_c;
+	int f;
+	int m;
+	int s;
+	int a;
+}pers[MAX];
+
+struct Node{
+	int id;
+	int num;
+	double s;
+	double a;
+}nodes[10000];
+
+int Findfather(int a){
+	if (father[a] == a)
+		return a;
+	else{
+		int F = Findfather(father[a]);
+		father[a] = F;
+		return F;
+	}
+}
+
+void Union(int a, int b){
+	int fa = Findfather(a);
+	int fb = Findfather(b);
+	if (fa < fb)
+		father[fb] = fa;
+	else
+		father[fa] = fb;
+}
+
+bool cmp(Node n1, Node n2){
+	if (n1.a / (n1.num*1.000) == n2.a / (n2.num*1.00000))
+		return n1.id < n2.id;
+	return n1.a / (n1.num*1.000) > n2.a / (n2.num*1.00000);
+}
+
+int main()
+{
+	for (int i = 0; i < 10000; i++){
+		father[i] = i;
+		vis[i] = 0;
+	}
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d%d%d%d", &pers[i].id, &pers[i].f, &pers[i].m, &pers[i].num_c);
+		vis[pers[i].id] = 1;
+		if (pers[i].f != -1){
+			Union(pers[i].id, pers[i].f);
+			vis[pers[i].f] = 1;
+		}
+		if (pers[i].m != -1){
+			Union(pers[i].id, pers[i].m);
+			vis[pers[i].m] = 1;
+		}
+		for (int j = 0; j < pers[i].num_c; j++){
+			int l_id;
+			scanf("%d", &l_id);
+			vis[l_id] = 1;
+			Union(pers[i].id, l_id);
+		}
+		scanf("%d%d", &pers[i].s, &pers[i].a);
+	}
+	for (int i = 0; i < n; i++){
+		nodes[Findfather(pers[i].id)].id = Findfather(pers[i].id);
+		nodes[Findfather(pers[i].id)].a += double(pers[i].a);
+		nodes[Findfather(pers[i].id)].s += double(pers[i].s);
+	}
+	for (int i = 0; i < 10000; i++){
+		if (vis[i]){
+			nodes[Findfather(i)].num++;
+		}
+	}
+	int cnt = 0;
+	vector<Node> out;
+	for (int i = 0; i < 10000; i++){
+		if (nodes[i].num){
+			out.push_back(nodes[i]);
+		}
+	}
+	sort(out.begin(), out.end(), cmp);
+	printf("%d\n", out.size());
+	for (int i = 0; i < out.size(); i++){
+		printf("%04d %d %.3lf %.3lf\n", out[i].id, out[i].num, out[i].s / (out[i].num*1.00000), out[i].a / (out[i].num*1.00000));
+	}
+
+	system("pause");
+	return 0;
+}

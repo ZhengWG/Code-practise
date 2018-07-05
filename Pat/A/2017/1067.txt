@@ -1,0 +1,62 @@
+#include <iostream>
+#include <set>
+#define MAX 100010
+//关键在于调序成功要删除元素
+using namespace std;
+
+int nums[MAX];
+int positions[MAX];
+int n;
+set<int> numbers;
+
+int Judge(int* nums){
+	for (set<int>::iterator it = numbers.begin(); it != numbers.end(); it++){
+		if (positions[*it]!= *it)
+			return positions[*it];
+	}
+	return -1;
+}
+
+
+int main(){
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		int num;
+		scanf("%d", &num);
+		nums[i] = num;
+		positions[num] = i;
+		if (num != i){
+			numbers.insert(num);
+		}
+	}
+
+	//swap
+	int count = 0;
+	int flag = Judge(nums);
+	while (flag >= 0){
+		if (positions[0]){
+			numbers.erase(positions[0]);
+			nums[positions[0]] = positions[0];
+			nums[positions[positions[0]]] = 0;
+			int pos_zero = positions[0];
+			positions[0] = positions[positions[0]];
+			positions[pos_zero] = pos_zero;
+			count++;
+		}
+		else{
+			flag = Judge(nums);//需要调换的位置
+			if (flag >= 0){
+				nums[0] = nums[flag];
+				nums[flag] = 0;
+				positions[0] = flag;
+				positions[nums[0]] = 0;
+				count++;
+			}
+		}
+	}
+
+	printf("%d", count);
+
+	system("pause");
+	return 0;
+}

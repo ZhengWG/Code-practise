@@ -1,0 +1,31 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <map>
+#pragma warning(disable:4996)
+using namespace std;
+
+int main()
+{
+	map<int, int> match;
+	int m, n;
+	scanf("%d%d", &m, &n);
+
+	for (int i = 0; i < m*n; i++){
+		int pi;
+		scanf("%d", &pi);
+		match[pi]++;
+	}
+
+	for (map<int, int>::iterator it = match.begin(); it != match.end(); it++){
+		if (it->second > m*n / 2){
+			printf("%d\n", it->first);
+			break;
+		}
+	}
+
+	system("pause");
+	return 0;
+}

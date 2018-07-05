@@ -1,0 +1,65 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 100010
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+double p, r;
+bool vis[MAX] = { 0 };
+double sum = 0;
+double tmp;
+
+struct Node{
+	int v;
+	vector <int> childs;
+	int num;
+}nodes[MAX];
+
+void DFS(int root){
+	if (nodes[root].childs.size() == 0){
+		sum += tmp*nodes[root].num;
+		return;
+	}
+	else{
+		for (int i = 0; i < nodes[root].childs.size(); i++){
+			tmp *= (1 + r / 100.000);
+			if (!vis[nodes[root].childs[i]])
+				DFS(nodes[root].childs[i]);
+			tmp /= (1 + r / 100.000);
+		}
+	}
+}
+
+int main()
+{
+	scanf("%d%lf%lf", &n, &p, &r);
+	for (int i = 0; i < n; i++){
+		int m;
+		nodes[i].v = i;
+		scanf("%d", &m);
+		if (!m){
+			scanf("%d", &nodes[i].num);
+		}
+		else{
+			for (int j = 0; j < m; j++){
+				int a;
+				scanf("%d", &a);
+				nodes[i].childs.push_back(a);
+			}
+		}
+	}
+	tmp = p;
+	DFS(0);
+	printf("%.1lf", sum);
+	
+	system("pause");
+	return 0;
+}

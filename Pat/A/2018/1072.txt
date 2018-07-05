@@ -1,0 +1,172 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#define INF 999999999
+#define MAX 1100
+#define MAX_SO 15
+#pragma warning(disable:4996)
+
+using namespace std;
+
+int G[MAX][MAX];
+int n, m, k, ds;
+bool vis[MAX] = { false };
+int d[MAX];
+vector<int> pre[MAX];
+bool flag;
+int st;
+vector<int> tempPath;
+int cost = 0;
+int temp_cost = 0;
+
+struct Solution{
+	int num;
+	float aver;
+	float min;
+	int total;
+};
+
+vector<Solution> sols;
+
+void Dijskra(int s){
+	fill(d, d + MAX, INF);
+	d[s] = 0;
+	for (int i = 1; i <= n+m; i++){
+		int u = -1;
+		int min = INF;
+		for (int j = 1; j <= n + m; j++){
+			if (d[j] < min&&vis[j] == false){
+				u = j;
+				min = d[j];
+			}
+		}
+		if (u == -1)
+			return;
+		vis[u] = true;
+		for (int v = 0; v <= n + m; v++){
+			if (G[u][v] != INF&&vis[v] == false){
+				if (d[v] > d[u] + G[u][v]){
+					d[v] = d[u] + G[u][v];
+					pre[v].clear();
+					pre[v].push_back(u);
+				}
+				else if (d[v] == d[u] + G[u][v]){
+					pre[v].push_back(u);
+				}
+			}
+		}
+	}
+}
+
+void DFS(int v){
+	if (v == st){
+		if (temp_cost > ds){
+			flag = false;
+		}
+		else{
+			cost = temp_cost;
+		}
+
+		return;
+	}
+	tempPath.push_back(v);
+	for (int i = 0; i < pre[v].size(); i++){
+		temp_cost += G[v][pre[v][i]];
+		DFS(pre[v][i]);
+		temp_cost -= G[v][pre[v][i]];
+	}
+	tempPath.pop_back();
+	return;
+}
+
+bool cmp(Solution so1, Solution so2){
+	if (so1.min == so2.min){
+		if (so1.aver == so2.aver)
+			return so1.num < so2.num;
+		return so1.aver < so2.aver;
+	}
+	return so1.min > so2.min;
+}
+
+int Change(char* word){
+	int len = strlen(word);
+	int wei = 1;
+	int num = 0;
+	if (word[0] == 'G'){
+		for (int i = len - 1; i > 0; i--){
+			num += (word[i]-'0') * wei;
+			wei *= 10;
+		}
+		num += n;
+	}
+	else{
+		for (int i = len - 1; i >= 0; i--){
+			num += (word[i] - '0') * wei;
+			wei *= 10;
+		}
+	}
+	return num;
+}
+
+int main()
+{	
+	fill(G[0], G[0] + MAX*MAX, INF);
+	scanf("%d%d%d%d", &n, &m, &k, &ds);
+	for (int i = 0; i < k; i++){
+		char place1[10];
+		char place2[10];
+		scanf("%s", place1);
+		int a = Change(place1);
+		scanf("%s", place2);
+		int b = Change(place2);
+		int d;
+		scanf("%d", &d);
+		G[a][b] = d;
+		G[b][a] = d;
+	}
+
+	for (int i = n + 1; i <= n + m; i++){
+		fill(vis, vis + MAX, 0);
+		Dijskra(i);
+		st = i;
+		float total = 0;
+		float aver = 0;
+		int min = INF;
+		for (int j = 1; j <= n; j++){
+			flag = true;
+			DFS(j);
+			if (!flag)
+				break;
+			if (cost < min)
+				min = cost;
+			total += cost;
+		}
+		aver = total * 1.000 / n;
+		if (flag){
+			Solution so;
+			so.num = i;
+			so.aver = aver;
+			so.total = total;
+			so.min = min;
+			sols.push_back(so);
+		}
+		for (int i = 0; i < MAX; i++){
+			pre[i].clear();
+		}
+	}
+	if (sols.size()){
+		sort(sols.begin(), sols.end(), cmp);
+		printf("G%d\n", sols[0].num-n);
+		printf("%.1f %.1f\n", sols[0].min, sols[0].aver);
+	}
+	else{
+		printf("No Solution\n");
+	}
+
+	system("pause");
+	return 0;
+}

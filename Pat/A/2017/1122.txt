@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string.h>
+#define MAX 210
+#pragma warning(disable:4996)
+
+int Gra[MAX][MAX];
+int vis[MAX];
+using namespace std;
+
+int main(){
+	memset(Gra[0], 0, MAX*MAX);
+	int n, m;
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < m; i++){
+		int v1, v2;
+		scanf("%d%d", &v1, &v2);
+		Gra[v1][v2] = Gra[v2][v1] = 1;
+	}
+	int k;
+	scanf("%d", &k);
+
+	for (int i = 0; i < k; i++){
+		memset(vis, 0, sizeof(vis));
+		bool flag = true;
+		int num;
+		scanf("%d", &num);
+		vector<int> vs;
+		for (int j = 0; j < num; j++){
+			int data;
+			scanf("%d", &data);
+			vs.push_back(data);
+		}
+		if (vs[0] != vs[num - 1])
+			flag = false;
+		else if (num != n + 1)
+			flag = false;
+		else{
+			int j;
+			for (j = 0; j < n; j++){
+				if (vis[vs[j]] == 1){
+					flag = false;
+					break;
+				}
+				vis[vs[j]] = 1;
+				if (!Gra[vs[j]][vs[j + 1]])
+					flag = false;
+			}
+		}
+		if (!flag)
+			printf("NO\n");
+		else
+			printf("YES\n");
+		vs.clear();
+	}
+	
+	system("pause");
+	return 0;
+}

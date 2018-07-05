@@ -1,0 +1,86 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#define MAX 100010
+#define INF 0x7fffffff
+#pragma warning(disable:4996)
+using namespace std;
+vector<pair<int, int>> sols;
+int price[MAX];
+int dr[MAX];
+int n, m;
+vector<int> num_sum;
+
+
+int Find(int s){
+	int mubiao = price[s] + m;
+	int l = s+1;
+	int r = n;
+	int mid;
+	while (l <= r){
+		mid = (l + r) / 2;
+		if (price[mid] > mubiao){
+			r = mid - 1;
+			
+		}
+		else if (price[mid] < mubiao){
+			l = mid + 1;
+		}
+		else{
+			dr[s] = mid;
+			return price[mid] - price[s];
+		}
+	}
+	if (l > n)
+		l = n;
+	dr[s] = l;
+	return price[l] - price[s];
+}
+
+int main()
+{	
+	scanf("%d%d", &n, &m);
+	price[0] = 0;
+	for (int i = 1; i < n+1; i++){
+		int p;
+		scanf("%d", &p);
+		price[i] = p + price[i-1];
+	}
+
+	int n_max = INF;
+	for (int i = 0; i <= n; i++){
+		int num = Find(i);
+		if (num >= m){
+			if (num == m){
+				if (n_max > num)
+					sols.clear();
+				n_max = num;
+				sols.push_back(pair<int, int>(i + 1, dr[i]));
+			}
+			else{
+				if (n_max > num){
+					n_max = num;
+					sols.clear();
+					sols.push_back(pair<int, int>(i + 1, dr[i]));
+				}
+				else if (n_max == num){
+					sols.push_back(pair<int, int>(i + 1, dr[i]));
+				}
+
+			}
+		}
+		else
+			break;
+	}
+
+	for (int i = 0; i < sols.size(); i++){
+		printf("%d-%d\n", sols[i].first, sols[i].second);
+	}
+
+	system("pause");
+	return 0;
+}

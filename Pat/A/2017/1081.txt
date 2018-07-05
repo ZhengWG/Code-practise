@@ -1,0 +1,88 @@
+#include <iostream>
+//P203 <<算法笔记》 注意取公约数的时候要用绝对值，输出的时候要注意正负
+
+using namespace std;
+typedef long long int Lint;
+
+typedef struct MEM{
+	Lint up;
+	Lint down;
+}mem;
+ 
+int Getcommon(long int a, long int b){
+	while (1){
+		int c;
+		if (a > b){
+			c = a % b;
+			a = b;
+			if (c == 0)
+				return b;
+			b = c;
+		}
+		else{
+			c = b % a;
+			b = a;
+			if (c == 0)
+				return a;
+			a = c;
+		}
+	}
+}
+
+mem Getsum(mem fenshu1, mem fenshu2){
+	mem newfenshu;
+	newfenshu.down = fenshu1.down * fenshu2.down;
+	newfenshu.up = fenshu1.up * fenshu2.down + fenshu2.up * fenshu1.down;
+	if (!newfenshu.up){
+		newfenshu.down = 1;
+		return newfenshu;
+	}
+
+	Lint yueshu = Getcommon(abs(newfenshu.up), abs(newfenshu.down));
+	newfenshu.up = newfenshu.up / yueshu;
+	newfenshu.down = newfenshu.down / yueshu;
+
+	return newfenshu;
+}
+
+int n;
+ 
+
+
+int main(){
+	scanf("%d", &n);
+	Lint sum = 0;
+
+	mem fenshu;
+	fenshu.up = 0;
+	fenshu.down = 1;
+
+
+	for (int i = 0; i < n; i++){
+		mem fenshu1;
+		scanf("%lld/%lld", &fenshu1.up, &fenshu1.down);
+		fenshu = Getsum(fenshu, fenshu1);
+	}
+
+	int beishu;
+
+	if (!fenshu.up){
+		printf("%d", 0);
+		return 0;
+	}
+		
+	
+
+	if (abs(fenshu.up) >= abs(fenshu.down)){
+		beishu = fenshu.up / fenshu.down;
+		fenshu.up = fenshu.up - fenshu.down * beishu;
+		printf("%d", beishu);
+		if (fenshu.up)//分子非零
+			printf(" %lld/%lld", abs(fenshu.up), abs(fenshu.down));
+	}
+	else
+		printf("%lld/%lld", fenshu.up, fenshu.down);
+
+	system("pause");
+	return 0;
+}

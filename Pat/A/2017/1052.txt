@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+//关键点在于给定头节点指向的链表不包含全部元素甚至没有元素
+using namespace std;
+
+#define MAX 1000000
+
+
+typedef struct Node{
+	int pre;
+	int key;
+	int next;
+}Node;
+
+int pres[MAX];
+
+int cmp(Node node1, Node node2){
+	return (node1.key < node2.key);
+}
+
+int n, firstnode;
+int main(){
+	scanf("%d%d", &n, &firstnode);
+	vector<Node> nodes;
+	for (int i = 0; i < n; i++){
+		Node node1;
+		scanf("%d%d%d", &node1.pre, &node1.key, &node1.next);
+		pres[node1.pre] = i;
+		nodes.push_back(node1);
+	}
+
+	vector<Node> choosennode;
+	int i;
+	for (i = 0; i < n; i++){
+		if (nodes[i].pre == firstnode)
+			break;
+	}
+	if (i == n){
+		printf("0 -1\n");
+		return 0;
+	}
+
+	choosennode.push_back(nodes[i]);
+	while (choosennode[choosennode.size()-1].next != -1){//不是最后结点
+		int next;
+		next = choosennode[choosennode.size() - 1].next;
+		choosennode.push_back(nodes[pres[next]]);
+	}
+
+	sort(choosennode.begin(), choosennode.end(), cmp);
+
+	for (int it = 0; it != choosennode.size() - 1; it++){
+		choosennode[it].next = choosennode[it + 1].pre;
+	}
+	choosennode[choosennode.size() - 1].next = -1;
+	printf("%d %05d\n", choosennode.size(), choosennode[0].pre);
+	for (int it = 0; it != choosennode.size() - 1; it++){
+		printf("%05d %d %05d\n", choosennode[it].pre, choosennode[it].key, choosennode[it].next);
+	}
+	printf("%05d %d %d\n", choosennode[choosennode.size() - 1].pre, choosennode[choosennode.size() - 1].key, choosennode[choosennode.size() - 1].next);
+
+	system("pause");
+	return 0;
+
+}

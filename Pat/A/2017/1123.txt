@@ -1,0 +1,158 @@
+#pragma warning (disable:4996)
+#include <iostream>
+#include <vector>
+#include <string.h>
+#include <queue>
+#define MAX 510
+
+using namespace std;
+
+typedef struct Node* Pnode;
+struct Node{
+	Pnode lchild;
+	Pnode rchild;
+	int height;
+	int num;
+};
+
+Pnode newnode(int n){
+	Pnode newnode = new Node;
+	newnode->num = n;
+	newnode->height = 1;
+	newnode->lchild = NULL;
+	newnode->rchild = NULL;
+	return newnode;
+}
+
+int GetHeight(Pnode root){
+	if (root == NULL)
+		return 0;
+	else
+		return root->height;
+}
+
+int getBalancenum(Pnode root){
+	return (GetHeight(root->lchild) - GetHeight(root->rchild));
+}
+
+int getmax(int num1, int num2){
+	if (num1 > num2)
+		return num1;
+	else
+		return num2;
+}
+
+void updateHeight(Pnode root){
+	root->height = getmax(GetHeight(root->lchild), GetHeight(root->rchild)) + 1;
+}
+
+void L(Pnode &root){
+	Pnode p = root->rchild;
+	root->rchild = p->lchild;
+	p->lchild = root;
+	updateHeight(root);
+	updateHeight(p);
+	root = p;
+}
+
+void R(Pnode &root){
+	Pnode p = root->lchild;
+	root->lchild = p->rchild;
+	p->rchild = root;
+	updateHeight(root);
+	updateHeight(p);
+	root = p;
+}
+
+void insert(Pnode &root, int v){
+	if (root == NULL){
+		root = newnode(v);
+		return;
+	}
+	if (v < root->num){
+		insert(root->lchild, v);
+		updateHeight(root);
+		if (getBalancenum(root) == 2){
+			if (getBalancenum(root->lchild)==1)
+				R(root);
+			else if (getBalancenum(root->lchild) == -1){
+				L(root->lchild);
+				R(root);
+			}
+		}
+	}
+	else{
+		insert(root->rchild, v);
+		updateHeight(root);
+		if (getBalancenum(root) == -2){
+			if (getBalancenum(root->rchild) == -1)
+				L(root);
+			else if (getBalancenum(root->rchild) == 1){
+				R(root->rchild);
+				L(root);
+			}
+		}
+	}
+
+}
+vector <int> nums;
+bool flag_start = false;
+bool flag = true;
+void Layer(Pnode root){
+	queue<Pnode> q;
+	q.push(root);
+	
+	while (!q.empty()){
+		Pnode newnode = q.front();
+		q.pop();
+		nums.push_back(newnode->num);
+
+		if (newnode->lchild != NULL){
+			q.push(newnode->lchild);			
+			if (flag_start)
+				flag = false;
+		}
+			
+		else
+			flag_start = true;
+
+		if (newnode->rchild != NULL){
+			q.push(newnode->rchild);			
+			if (flag_start)
+				flag = false;
+		}
+			
+		else
+			flag_start = true;
+
+	}
+	return;
+}
+
+int n;
+int main(){
+	scanf("%d", &n);
+	Pnode root = NULL;
+	for (int i = 0; i < n; i++){
+		int nodenum;
+		scanf("%d", &nodenum);
+		insert(root, nodenum);
+	}
+
+	Layer(root);
+
+	for (int i = 0; i < nums.size(); i++){
+		if (i == 0)
+			printf("%d", nums[i]);
+		else
+			printf(" %d", nums[i]);
+	}
+	printf("\n");
+	if (!flag)
+		printf("NO");
+	else
+		printf("YES");
+
+	system("pause");
+	return 0;
+}

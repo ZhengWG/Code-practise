@@ -1,0 +1,80 @@
+//book: P290 《算法笔记》
+//归结为已知先序，中序，求后序的题型
+#include <iostream>
+#include <stack>
+#include <string.h>
+using namespace std;
+
+typedef struct Node* NP;
+struct Node{
+	int data;
+	NP childl;
+	NP childR;
+};
+
+int n;
+int Front[35];
+int In[35];
+stack<int> sta;
+
+NP CreateNode(int FroL, int FroR, int InL, int InR){
+	if (FroL > FroR)
+		return NULL;
+	NP root = new struct Node;
+	root->data = Front[FroL];
+
+	int i;
+	for (i = 0; i < n; i++)
+		if (root->data == In[i])
+			break;
+	//i记录了中序遍历序列的根结点位置
+	int num_left = i - InL;
+	root->childl = CreateNode( FroL + 1, FroL + num_left,InL, InL + num_left - 1);
+	root->childR = CreateNode(FroL + num_left + 1, FroR, i + 1, InR);
+	return root;
+}
+
+int times = 1;//记录输出的次数
+void PosTravel(NP root){
+	if (root == NULL)
+		return;
+	PosTravel(root->childl);
+	PosTravel(root->childR);
+	printf("%d", root->data);
+
+	if (times != n)
+		printf(" ");
+	times++;
+
+}
+
+int main(){
+	scanf("%d", &n);
+	char type[5];
+
+	//作为数组赋值的计数
+	int k = 0;
+	int j = 0;
+	
+	while (1){
+		scanf("%s", type);
+		if (!strcmp(type, "Push")){
+			int num;
+			scanf("%d", &num);
+			sta.push(num);
+			Front[k] = num;
+			k++;
+		}
+		else{
+			In[j] = sta.top();
+			sta.pop();
+			j++;
+		}
+		if (k == n && j == n)
+			break;
+	}
+	NP root = CreateNode(0, n - 1, 0, n - 1);
+	PosTravel(root);
+	system("pause");
+	return 0;
+}

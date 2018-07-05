@@ -1,0 +1,92 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>  
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <queue>
+#include <functional>
+#pragma warning(disable:4996)
+#define MAX 1005
+#define TIME 28800
+#define NA 88888888
+using namespace std;
+int n, k;
+
+struct Cus{
+	int time_arrive = NA;
+	int time_pro;
+	int time_stop;
+	int time_wait;
+	bool operator < (const Cus cus)const{
+		return time_stop > cus.time_stop;
+	}
+
+}cus[MAX];
+
+bool cmp(const Cus cus1, const Cus cus2){
+	return cus1.time_arrive < cus2.time_arrive;
+}
+
+
+int main()
+{
+	scanf("%d%d", &n, &k);
+	priority_queue<int, vector<int>, greater<int> > queline;
+	for (int i = 0; i < n; i++){
+		int hour, minute, second;
+		scanf("%d:%d:%d", &hour, &minute, &second);
+		cus[i].time_arrive = hour * 3600 + minute * 60 + second;
+		int pro;
+		scanf("%d", &pro);
+		if (pro > 60)
+			pro = 60;
+		cus[i].time_pro = pro * 60;
+	}
+	sort(cus, cus + n, cmp);
+
+	int time_curr = TIME;
+	int num = 0;
+	for (int i = 0; i < k; i++){
+		if (i >= n) break;
+		int time_start;
+		if (time_curr>cus[i].time_arrive)
+			time_start = time_curr;
+		else
+			time_start = cus[i].time_arrive;
+		cus[i].time_stop = time_start + cus[i].time_pro;
+		cus[i].time_wait = time_start - cus[i].time_arrive;
+		queline.push(cus[i].time_stop);
+		num++;
+	}
+
+	for (int i = num; i < n; i++){
+		int time_now = queline.top();
+		queline.pop();
+		int time_start;
+		if (time_now < cus[i].time_arrive) time_start = cus[i].time_arrive;
+		else time_start = time_now;
+		cus[i].time_stop = time_start + cus[i].time_pro;
+		cus[i].time_wait = time_start - cus[i].time_arrive;
+		queline.push(cus[i].time_stop);
+	}
+
+	float sum = 0;
+	int num_r = 0;
+	for (int i = 0; i < n; i++){
+		if (cus[i].time_arrive <= 17*3600){
+			sum += cus[i].time_wait;
+			num_r++;
+		}
+	}
+	float sum_time;
+	if (num_r)
+		sum_time = sum*1.00000000 / 60.000 / num_r;
+	else
+		sum_time = 0;
+	printf("%.1f", sum_time);
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,105 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX_M 1300
+#define MAX_N 130
+#define MAX_L 65
+#pragma warning (disable:4996)
+using namespace std;
+int m, n, l, t;
+int pixel[MAX_L][MAX_M][MAX_N];
+bool vis[MAX_L][MAX_M][MAX_N] = { 0 };
+int ans = 0;
+struct Node{
+	int x, y, z;
+};
+
+int search(Node node){
+	queue<Node> nodes;
+	nodes.push(node);
+	if (pixel[node.x][node.y][node.z] ==0 || vis[node.x][node.y][node.z])
+		return 0;
+	vis[node.x][node.y][node.z] = 1;
+	int sum = 0;
+	while (!nodes.empty()){
+		Node tmp = nodes.front();
+		nodes.pop();
+		sum++;
+		if (tmp.x - 1 >= 0 && pixel[tmp.x - 1][tmp.y][tmp.z] && !vis[tmp.x - 1][tmp.y][tmp.z]){
+			Node temp = tmp;
+			temp.x--;
+			vis[temp.x][tmp.y][tmp.z] = 1;
+			nodes.push(temp);
+		}
+		if (tmp.y - 1 >= 0 && pixel[tmp.x][tmp.y-1][tmp.z] && !vis[tmp.x][tmp.y-1][tmp.z]){
+			Node temp = tmp;
+			temp.y--;
+			vis[tmp.x][temp.y][tmp.z] = 1;
+			nodes.push(temp);
+		}
+		if (tmp.z - 1 >= 0 && pixel[tmp.x][tmp.y][tmp.z-1] && !vis[tmp.x][tmp.y][tmp.z-1]){
+			Node temp = tmp;
+			temp.z--;
+			vis[tmp.x][tmp.y][temp.z] = 1;
+			nodes.push(temp);
+		}
+		if (tmp.x + 1 < l && pixel[tmp.x + 1][tmp.y][tmp.z] && !vis[tmp.x + 1][tmp.y][tmp.z]){
+			Node temp = tmp;
+			temp.x++;
+			vis[temp.x][tmp.y][tmp.z] = 1;
+			nodes.push(temp);
+		}
+		if (tmp.y + 1 < m && pixel[tmp.x][tmp.y + 1][tmp.z] && !vis[tmp.x][tmp.y + 1][tmp.z]){
+			Node temp = tmp;
+			temp.y++;
+			vis[tmp.x][temp.y][tmp.z] = 1;
+			nodes.push(temp);
+		}
+		if (tmp.z + 1 < n && pixel[tmp.x][tmp.y][tmp.z + 1] && !vis[tmp.x][tmp.y][tmp.z + 1]){
+			Node temp = tmp;
+			temp.z++;
+			vis[tmp.x][tmp.y][temp.z] = 1;
+			nodes.push(temp);
+		}
+	}
+	if (sum >= t)
+		return sum;
+	else
+		return 0;
+}
+
+void BFS(){
+	for (int i = 0; i < l; i++){
+		for (int j = 0; j < m; j++){
+			for (int k = 0; k < n; k++){
+				Node node = { i, j, k };
+				ans += search(node);
+			}
+		}
+	}
+	
+}
+
+int main()
+{
+	scanf("%d%d%d%d", &m, &n, &l, &t);
+	for (int i = 0; i < l; i++){
+		for (int j = 0; j < m; j++){
+			for (int k = 0; k < n; k++)
+				scanf("%d", &pixel[i][j][k]);
+		}
+	}
+	BFS();
+	printf("%d", ans);
+
+	system("pause");
+	return 0;
+}

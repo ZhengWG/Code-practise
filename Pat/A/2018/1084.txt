@@ -1,0 +1,46 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <algorithm>
+#pragma warning(disable:4996)
+#define MAX 81
+using namespace std;
+char ori[MAX];
+char out[MAX];
+
+char Change(char w_ori){
+	char out = w_ori;
+	if (w_ori >= 'a' && w_ori <= 'z')
+		out = w_ori - 'a' + 'A';
+	return out;
+}
+
+int main()
+{
+	scanf("%s", ori);
+	scanf("%s", out);
+
+	int len = strlen(ori);
+	int num = 0;
+	vector<char> keys;
+	for (int i = 0; i < len; i++){
+		if (ori[i] == out[num]){
+			num++;
+		}
+		else{
+			char worn_key = Change(ori[i]);
+			if (find(keys.begin(), keys.end(), worn_key) == keys.end())
+				keys.push_back(worn_key);
+		}
+	}
+
+	for (int i = 0; i < keys.size(); i++)
+		printf("%c", keys[i]);
+	printf("\n");
+
+	system("pause");
+	return 0;
+}

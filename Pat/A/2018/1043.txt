@@ -1,0 +1,112 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <queue>
+#define MAX 110
+#define MAX_SC 101
+#pragma warning(disable:4996)
+using namespace std;
+int n;
+vector<int> pres;
+vector<int> posts;
+struct Node{
+	int data;
+	Node* lchild;
+	Node* rchild;
+};
+
+Node* NewNode(int x){
+	Node* node = new struct Node;
+	node->data = x;
+	node->lchild = NULL;
+	node->rchild = NULL;
+	return node;
+}
+
+void P_insert(Node* &root, int x){
+	if (root == NULL){
+		root = NewNode(x);
+	}
+	else if (x >= root->data){
+		P_insert(root->rchild, x);
+	}
+	else
+		P_insert(root->lchild, x);
+	return;
+}
+
+void N_insert(Node* &root, int x){
+	if (root == NULL){
+		root = NewNode(x);
+	}
+	else if (x < root->data){
+		N_insert(root->rchild, x);
+	}
+	else
+		N_insert(root->lchild, x);
+	return;
+}
+
+void Pre(Node* root){
+	if (root == NULL)
+		return;
+	pres.push_back(root->data);
+	Pre(root->lchild);
+	Pre(root->rchild);
+	return;
+}
+
+void Post(Node* root){
+	if (root == NULL)
+		return;
+	Post(root->lchild);
+	Post(root->rchild);
+	posts.push_back(root->data);
+	return;
+}
+
+
+int main()
+{	
+	scanf("%d", &n);
+	Node* node_p = NULL;
+	Node* node_n = NULL;
+	vector<int> input;
+	for (int i = 0; i < n; i++){
+		int num;
+		scanf("%d", &num);
+		P_insert(node_p, num);
+		N_insert(node_n, num);
+		input.push_back(num);
+	}
+
+	Pre(node_p);
+	if (pres == input){
+		Post(node_p);
+	}
+	else{
+		pres.clear();
+		Pre(node_n);
+		if (pres == input){
+			Post(node_n);
+		}
+	}
+
+	if (!posts.size())
+		printf("NO\n");
+	else{
+		printf("YES\n");
+		printf("%d", posts[0]);
+		for (int i = 1; i < posts.size(); i++){
+			printf(" %d", posts[i]);
+		}
+	}
+
+	system("pause");
+	return 0;
+}

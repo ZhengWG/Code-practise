@@ -1,0 +1,135 @@
+#include <iostream>
+#include <set>
+#include <string.h>
+
+#define MAX 18000
+
+using namespace std;
+int vis[MAX];
+
+typedef struct Line* Pline;
+struct Line{
+	int other_person;
+	Pline next;
+};
+
+typedef struct Person* Pman;
+struct Person{
+	int value;
+	Pline first;
+};
+
+typedef struct Gra* Pgra;
+struct Gra{
+	int num;
+	Pman manlist[MAX];
+};
+
+
+int hashing(char* name){
+	char a = name[2];
+	char b = name[1];
+	char c = name[0];
+
+	int num = (a - 'A') + (b - 'A') * 26 + (c - 'A') * 26 * 26;
+
+	if (num >= 18000)
+		return 0;
+	return num;
+}
+
+int num_men;
+int sum_value;
+int maxvalue;
+int temp_man;
+
+void DFS(Pgra gra, int num){
+	Pline line = new struct Line;
+	line = gra->manlist[num]->first;
+	vis[num] = 1;
+	num_men++;
+	sum_value += gra->manlist[num]->value;
+	if (gra->manlist[num]->value > maxvalue){
+		temp_man = num;
+		maxvalue = gra->manlist[num]->value;
+	}
+
+	while (line != NULL){
+		if (!vis[line->other_person])
+			DFS(gra, line->other_person);
+		line = line->next;
+	}
+
+	return;
+}
+
+set<int> namelist;
+int main(){
+
+	int num, thre;
+	scanf("%d%d", &num, &thre);
+	Pgra gra = new struct Gra;
+	for (int i = 0; i < MAX; i++){
+		gra->num = num;
+		gra->manlist[i] = new struct Person;
+		gra->manlist[i]->value = 0;
+		gra->manlist[i]->first = NULL;
+	}
+
+	for (int i = 0; i < num; i++){
+		char name1[4], name2[4];
+		int value;
+		scanf("%s%s%d", name1, name2, &value);
+		int num1 = hashing(name1);
+		int num2 = hashing(name2);
+		namelist.insert(num1);
+		namelist.insert(num2);
+
+		Pline newline1 = new struct Line;
+		newline1->other_person = num2;
+		gra->manlist[num1]->value += value;
+		newline1->next = gra->manlist[num1]->first;
+		gra->manlist[num1]->first = newline1;
+
+		Pline newline2 = new struct Line;
+		newline2->other_person = num1;
+		gra->manlist[num2]->value += value;
+		newline2->next = gra->manlist[num2]->first;
+		gra->manlist[num2]->first = newline2;
+	}
+
+	memset(vis, 0, sizeof(vis));
+	int final_num = 0;
+	int num_gang = 0;
+	set<int> final_name;
+	for (set<int>::iterator it = namelist.begin(); it != namelist.end(); it++){
+		if (vis[*it])                                                                                       
+			continue;
+		else{
+			sum_value = 0;
+			num_men = 0;
+			maxvalue = 0;
+			DFS(gra, *it);
+			if (sum_value/2 > thre&&num_men > 2){
+				num_gang++;
+				final_name.insert(temp_man);
+				vis[temp_man] = num_men;
+			}
+		}
+	}
+
+	printf("%d\n", num_gang);
+
+	for (set<int>::iterator it = final_name.begin(); it != final_name.end(); it++){
+		char name[4];
+		name[3] = '\0';
+		name[2] = (*it % 26) + 'A';
+		name[1] = (*it / 26) % 26 + 'A';
+		name[0] = (*it / 26 / 26) % 26 + 'A';
+
+		printf("%s %d\n",name, vis[*it]);
+	}
+
+	system("pause");
+	return 0;
+}

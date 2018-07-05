@@ -1,0 +1,78 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 1005
+#define MAX_K 2502
+#pragma warning (disable:4996)
+using namespace std;
+int n, l;
+int G[MAX][MAX];
+bool vis[MAX] = { false };
+int Le[MAX];
+int level = 0;
+int cnt = 0;
+
+void BFS(int root){
+	queue<int> qu;
+	qu.push(root);
+	Le[root] = 0;
+	while (!qu.empty()){
+		int curr = qu.front();
+		qu.pop();
+		level = Le[curr];
+		if (level >= l)
+			break;
+		for (int i = 1; i <= n; i++){
+			if (G[i][curr] == 1 && vis[i] == 0 && i != root){
+				Le[i] = Le[curr] + 1;
+				vis[i] = 1;
+				qu.push(i);
+				cnt++;
+			}
+		}
+	}
+	return;
+}
+
+int main()
+{	
+	fill(G[0], G[0] + MAX*MAX, 0);
+	scanf("%d%d", &n, &l);
+	for (int i = 1; i <= n; i++){
+		int m;
+		scanf("%d", &m);
+		for (int j = 0; j < m; j++){
+			int k;
+			scanf("%d", &k);
+			G[i][k] = 1;
+		}
+	}
+
+	int m;
+	scanf("%d", &m);
+	vector <int> input;
+	for (int i = 0; i < m; i++){
+		int in;
+		scanf("%d", &in);
+		input.push_back(in);
+	}
+
+	for (int i = 0; i < m; i++){
+		level = 0;
+		cnt = 0;
+		fill(vis, vis + MAX, 0);
+		fill(Le, Le + MAX, 0);
+		BFS(input[i]);
+		printf("%d\n", cnt);
+	}
+
+	system("pause");
+	return 0;
+}

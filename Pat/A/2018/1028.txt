@@ -1,0 +1,65 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <queue>
+#pragma warning (disable:4996)
+#define MAX 100000
+using namespace std;
+int n, c;
+struct Stu{
+	string id;
+	string name;
+	int grade;
+}stus[MAX];
+
+bool cmp1(Stu stu1, Stu stu2){
+	return stu1.id < stu2.id;
+}
+
+
+bool cmp2(Stu stu1, Stu stu2){
+	if (stu1.name == stu2.name)
+		return stu1.id < stu2.id;
+	return stu1.name < stu2.name;
+}
+
+
+bool cmp3(Stu stu1, Stu stu2){
+	if (stu1.grade == stu2.grade)
+		return stu1.id < stu2.id;
+	return stu1.grade < stu2.grade;
+}
+
+int main()
+{	
+	scanf("%d%d", &n, &c);
+	for (int i = 0; i < n; i++){
+		cin >> stus[i].id >> stus[i].name >> stus[i].grade;
+	}
+	switch (c)
+	{
+	case 1:
+		sort(stus, stus + n, cmp1);
+		break;
+	case 2:
+		sort(stus, stus + n, cmp2);
+		break;
+	case 3:
+		sort(stus, stus + n, cmp3);
+		break;
+	default:
+		break;
+	}
+
+	for (int i = 0; i < n; i++){
+		printf("%s %s %d\n", stus[i].id.c_str(), stus[i].name.c_str(), stus[i].grade);
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,125 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#pragma warning(disable:4996)
+using namespace std;
+int n;
+string words_low[13] = { "tret", "jan", "feb", "mar", "apr", "may", "jun", "jly", "aug", "sep", "oct", "nov", "dec" };
+string words_high[12] = { "tam", "hel", "maa", "huh", "tou", "kes", "hei", "elo", "syy", "lok", "mer", "jou" };
+bool Judge(char* word){
+	int len = strlen(word);
+	if (len){
+		if (word[0] >= '0'  && word[0] <= '9')
+			return 1;
+		else
+			return 0;
+	}
+}
+
+int main()
+{
+	scanf("%d", &n);
+	getchar();
+	for (int i = 0; i < n; i++){
+		char input[9];
+		gets(input);
+		bool flag = Judge(input);
+		char output[9];
+		if (flag){
+			//输入数字
+			int num = 0;
+			int be = 1;
+			for (int j = strlen(input) - 1; j >= 0; j--){
+				num += (input[j] - '0')*be;
+				be *= 10;
+			}
+			//转为13进制
+			int temp = num;
+			be = temp % 13;
+			num = temp / 13;
+			if (!num){
+				printf("%s\n", words_low[be].c_str());
+			}
+			else{
+				printf("%s", words_high[--num].c_str());
+				if (be)
+					printf(" %s\n", words_low[be].c_str());
+				else
+					printf("\n");
+			}
+		}
+		else{
+			int len = strlen(input);
+			if (len == 3 || len == 4){
+				string low = input;
+				int k;
+				for (k = 0; k < 13; k++){
+					if (words_low[k] == low){
+						break;
+					}
+				}
+				if (k == 13){
+					for (k = 0; k < 13; k++){
+						if (words_high[k] == low){
+							break;
+						}
+					}
+					k++;
+					printf("%d\n", k*13);
+				}
+				else{
+					printf("%d\n", k);
+				}
+			}
+			else{
+				int len = strlen(input);
+				char high[4];
+				char low[4];
+				int l;
+				int h;
+				if (len == 7){
+					for (int m = 0; m < 4; m++){
+						high[m] = input[m];
+						low[m] = input[m + 4];
+					}
+					string s_low = low;
+					string s_high = high;
+					s_high.resize(3);
+					s_low.resize(3);
+					for (l = 0; l < 13; l++){
+						if (words_low[l] == s_low){
+							break;
+						}
+					}
+					for (h = 0; h < 13; h++){
+						if (words_high[h] == s_high){
+							break;
+						}
+					}
+				}
+				else{
+					for (int m = 0; m < 4; m++){
+						high[m] = input[m];
+						string s_high = high;
+						s_high.resize(3);
+						for (h = 0; h < 13; h++){
+							if (words_high[h] == s_high){
+								break;
+							}
+						}
+						l = 0;
+					}
+				}
+				int out = (h + 1) * 13 + l;
+				printf("%d\n", out);
+			}
+
+
+		}
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,47 @@
+#include <iostream>
+//P21 《算法笔记》 单纯在每次查询的时候遍历会造成超时
+
+#define MAX_NUM 100010
+
+using namespace std;
+int roote[MAX_NUM];
+int roote_from[MAX_NUM];
+
+int main(){
+	int n;
+	scanf("%d", &n);
+	int sum = 0;
+	roote_from[0] = 0;
+	for (int i = 0; i < n; i++){
+		int value;
+		scanf("%d", &value);
+		roote[i] = value;
+		sum += value;
+		if (i == n - 1)
+			continue;
+		roote_from[i + 1] = roote_from[i] + value;
+	}
+
+	int m;
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++){
+		int start, stop;
+		scanf("%d%d", &start, &stop);
+		int line1, line2;
+		if (start > stop){
+			line1 = roote_from[start-1] - roote_from[stop-1];
+			line2 = sum - line1;
+		}
+		else
+		{
+			line1 = roote_from[stop - 1] - roote_from[start - 1];
+			line2 = sum - line1;
+		}
+		if (line1 > line2)
+			printf("%d\n", line2);
+		else
+			printf("%d\n", line1);
+	}
+	system("pause");
+	return 0;
+}

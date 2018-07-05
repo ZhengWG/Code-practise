@@ -1,0 +1,76 @@
+#include <iostream>
+#include <algorithm>
+#include <string.h>
+#define MAX 30010
+using namespace std;
+//关键在于比较函数的创建cmp
+
+typedef struct Student{
+	char num[14];
+	int localrank;
+	int finalrank;
+	int score;
+	int area;
+}Student;
+
+int n, k;
+Student stus[MAX];
+
+int cmp(Student a, Student b){
+	if (a.score > b.score)
+		return 1;
+	else if (a.score < b.score)
+		return 0;
+	else{
+		int flag = strcmp(a.num, b.num);
+		if (flag > 0)
+			return 0;
+		else
+			return 1;
+	}
+}
+
+int main(){
+	scanf("%d", &n);
+	int order = 0;
+	for (int i = 1; i <= n; i++){
+		scanf("%d", &k);
+		int begin = order;
+		for (int j = 0; j < k; j++){
+			scanf("%s %d", &stus[order].num, &stus[order].score);
+			stus[order].area = i;
+			order++;
+		}
+		sort(stus + begin, stus + order, cmp);
+		for (int m = begin; m < order; m++){
+			if (m == begin)
+				stus[m].localrank = 1;
+			else{
+				int before = m - 1;
+				if (stus[before].score == stus[m].score)
+					stus[m].localrank = stus[before].localrank;
+				else
+					stus[m].localrank = m - begin + 1;
+			}
+		}
+	}
+	sort(stus, stus + order, cmp);
+	for (int m = 0; m < order; m++){
+		if (m == 0)
+			stus[m].finalrank = 1;
+		else{
+			int before = m - 1;
+			if (stus[before].score == stus[m].score)
+				stus[m].finalrank = stus[before].finalrank;
+			else
+				stus[m].finalrank = m + 1;
+		}
+	}
+
+	printf("%d\n", order);
+	for (int m = 0; m < order; m++)
+		printf("%s %d %d %d\n", stus[m].num, stus[m].finalrank, stus[m].area, stus[m].localrank);
+
+	system("pause");
+	return 0;
+}

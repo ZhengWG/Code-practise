@@ -1,0 +1,76 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 100010
+#define INF 999999999
+#define NA -999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int nums[MAX]; 
+int nums_t[MAX];
+vector<int> out;
+int min_t = INF;
+int max_t = NA;
+int min_n[MAX];
+int max_n[MAX];
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i+1]);
+		nums_t[i + 1] = nums[i + 1];
+	}
+	for (int i = 1; i <= n; i++){
+		if (i == 1)
+			min_n[i] = nums[i];
+		else
+			min_n[i] = max(nums[i - 1], min_n[i-1]);
+	}
+
+	for (int i = n; i >= 1; i--){
+		if (i == n)
+			max_n[i] = nums[i];
+		else
+			max_n[i] = min(nums[i + 1], max_n[i+1]);
+	}
+
+	for (int i = 1; i <= n; i++){
+		if (i == 1){
+			if (nums[i] < max_n[i])
+				out.push_back(nums[i]);
+		}
+		else if (i == n){
+			if (nums[i] > min_n[i])
+				out.push_back(nums[i]);
+		}
+		else{
+			if (nums[i]>min_n[i] && nums[i] < max_n[i])
+				out.push_back(nums[i]);
+		}
+	}
+	if (!out.size()){
+		printf("0\n\n");
+	}
+	else{
+		printf("%d\n", out.size());
+		for (int i = 0; i < out.size(); i++){
+			if (i == out.size() - 1)
+				printf("%d\n", out[i]);
+			else
+				printf("%d ", out[i]);
+		}
+	}
+
+	system("pause");
+	return 0;
+}

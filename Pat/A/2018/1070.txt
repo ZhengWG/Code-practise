@@ -1,0 +1,58 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#pragma warning(disable:4996)
+#define MAX 1001
+using namespace std;
+int n, m;
+
+struct Kind{
+	double num;
+	double t_price;
+	double a_price;
+}kind[MAX];
+
+bool cmp(Kind kind1, Kind kind2){
+	return kind1.a_price > kind2.a_price;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	scanf("%d", &m);
+
+	for (int i = 0; i < n; i++){
+		double num;
+		scanf("%lf", &num);
+		kind[i].num = num;
+	}
+	for (int i = 0; i < n; i++){
+		double t_price;
+		scanf("%lf", &t_price);
+		kind[i].t_price = t_price;
+		kind[i].a_price = t_price / kind[i].num;
+	}
+	sort(kind, kind + n, cmp);
+
+	int ton = m;
+	double pro = 0;
+	for (int i = 0; i < n; i++){
+		if (ton > kind[i].num){
+			ton -= kind[i].num;
+			pro += kind[i].t_price;
+		}
+		else{
+			pro += kind[i].t_price / kind[i].num * ton;
+			break;
+		}
+	}
+
+	printf("%.2lf", pro);
+
+	system("pause");
+	return 0;
+}

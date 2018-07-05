@@ -1,0 +1,78 @@
+
+#include <iostream>
+#include <set>
+//P25 《算法笔记》 需要考虑到系数正负相消的情况
+
+#define MAX_N 1010
+#define MAX_K 15
+
+using namespace std;
+
+set<int> ex1;//指数
+set<int> ex2;
+
+double coe1[MAX_N];//系数
+double coe2[MAX_N];
+
+int main(){
+	int n;
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		int ex;
+		double coe;
+		scanf("%d%lf", &ex, &coe);
+		ex1.insert(ex);
+		coe1[ex] = coe;
+	}
+
+	int m;
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++){
+		int ex;
+		double coe;
+		scanf("%d%lf", &ex, &coe);
+		ex2.insert(ex);
+		coe2[ex] = coe;
+	}
+
+	for (set<int>::iterator it = ex1.begin(); it != ex1.end(); it++){
+		int ex = *it;
+		set<int>::iterator it2 = ex2.find(ex);
+		if (it2 != ex2.end())
+			coe1[*it] += coe2[*it2];
+	}
+
+	for (set<int>::iterator it = ex2.begin(); it != ex2.end(); it++){
+		int ex = *it;
+		set<int>::iterator it1 = ex1.find(ex);
+		if (it1 == ex1.end()){
+			ex1.insert(*it);
+			coe1[*it] = coe2[*it];
+		}
+	}
+
+	for (set<int>::iterator it = ex1.begin(); it != ex1.end(); it++){
+		if (coe1[*it] == 0)
+			ex1.erase(*it);
+		if (!ex1.size())
+			break;
+	}
+
+	printf("%d", ex1.size());
+	if (ex1.size()){
+		set<int>::iterator it = ex1.end();
+		while (1){
+			it--;
+			if (coe1[*it] != 0){
+				printf(" %d", *it);
+				printf(" %.1lf", coe1[*it]);
+			}
+			else if (*it == 0)
+				printf(" %.1lf", coe1[*it]);
+			if (it == ex1.begin())
+				break;
+		}
+	}
+	system("pause");
+	return 0;
+}

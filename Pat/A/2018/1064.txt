@@ -1,0 +1,47 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 1010
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int nums[MAX];
+int order = 0;
+int tree[MAX];
+
+void Inorder(int v){
+	if (v >= n){
+		order++;
+		return;
+	}
+	Inorder(2 * v + 1);
+	tree[v] = nums[order-1];
+	Inorder(2 * v + 2);
+
+}
+
+int main()
+{	
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i]);
+	}
+	sort(nums, nums + n);
+	Inorder(0);
+	for (int i = 0; i < n; i++){
+		if (i == n-1)
+			printf("%d", tree[i]);
+		else
+			printf("%d ", tree[i]);
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,69 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 1010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+char ch[MAX];
+string s;
+
+bool Judge(string s){
+	int size = s.size();
+	for (int i = 0; i < size / 2; i++){
+		if (s[i] != s[size - i - 1])
+			return false;
+	}
+	return true;
+}
+
+string Add(string s){
+	int size = s.size();
+	char s_r[MAX];
+	for (int i = 0; i < size; i++){
+		s_r[i] = s[size - i -1];
+	}
+	char s_s[MAX];
+	int flag = 0;
+	int num;
+	for (int i = 0; i < size; i++){
+		num = s[i] + s_r[i] - '0' - '0' + flag;
+		s_s[i] = num % 10 + '0';
+		flag = num / 10;
+	}
+	if (flag){
+		s_s[size] = flag + '0';
+	}
+	string c = s_r;
+	c.resize(size);
+	string sum = s_s;
+	sum.resize(flag + size);
+	reverse(sum.begin(), sum.end());
+	printf("%s + %s = %s\n", s.c_str(), c.c_str(), sum.c_str());
+	return sum;
+}
+
+int main()
+{
+	cin >> s;
+	int it = 0;
+	while (!Judge(s) && it < 10){
+		s = Add(s);
+		it++;
+	}
+	if (it >= 10 && !Judge(s))
+		printf("Not found in 10 iterations.");
+	else
+		printf("%s is a palindromic number.", s.c_str());
+	
+	system("pause");
+	return 0;
+}

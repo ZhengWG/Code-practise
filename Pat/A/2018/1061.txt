@@ -1,0 +1,56 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 1010
+#pragma warning (disable:4996)
+using namespace std;
+string s1, s2, s3, s4;
+string days[7] = { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+
+
+int main()
+{	
+	cin >> s1 >> s2 >> s3 >> s4;
+	vector<char> same;
+	for (int i = 0; i < s1.size() && i < s2.size(); i++){
+		if (same.size() == 0){
+			if (s1[i] == s2[i] && s1[i]>='A' && s1[i]<='G'){
+				same.push_back(s1[i]);
+			}
+		}
+		else if (same.size() == 1){
+			if (s1[i] == s2[i]){
+				if ((s1[i] >= 'A' && s1[i] <= 'N') || (s1[i] >= '0' && s1[i] <= '9'))
+					same.push_back(s1[i]);
+			}
+		}
+		else
+			break;
+	}
+	int c;
+	for (int i = 0; i < s3.size() && i < s4.size(); i++){
+		if (s3[i] == s4[i]){
+			if ((s3[i] >= 'A' && s3[i] <= 'Z') || (s3[i] >= 'a' && s3[i] <= 'z')){
+				c = i;
+				break;
+			}
+		}
+	}
+	int a = (same[0] - 'A')%8;
+	int b;
+	if (same[1] >= '0'&&same[1] <= '9')
+		b = same[1] - '0';
+	else
+		b = same[1] - 'A' + 10;
+	printf("%s %02d:%02d", days[a].c_str(), b, c);
+
+	system("pause");
+	return 0;
+}

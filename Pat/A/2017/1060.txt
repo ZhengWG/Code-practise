@@ -1,0 +1,109 @@
+#include <iostream>
+#define MAX 110
+using namespace std;
+
+typedef struct NUM{
+	char num[MAX];
+	int flag_xiaoshu;
+	NUM(){
+		flag_xiaoshu = -1;//默认非小数
+		for (int i = 0; i < MAX; i++)
+			num[i] = -1;
+	}
+}NUM;
+
+int n;
+NUM num1;
+NUM num2;
+
+bool Judge(NUM num1, int you1, NUM num2, int you2, int n){
+	if ((you1 - num1.flag_xiaoshu) != (you2 - num2.flag_xiaoshu))
+		return false;
+	else{
+		for (int i = 0; i < n; i++){
+			if (num1.num[i + you1] < '0' && num2.num[i + you1] < '0'){
+				break;
+			}
+			else if (num1.num[i + you1] < '0' || num2.num[i + you1] < '0'){
+				if (num1.num[i + you1] > '0' || num2.num[i + you1] > '0')
+					return false;
+			}
+			else if (num1.num[i + you1] != num2.num[i + you2])
+				return false;
+		}
+	}
+	return true;
+}
+
+void Print(NUM num, int you, int n){
+	printf(" 0.");
+	for (int i = 0; i < n; i++){
+		if (num.num[you + i] == -1)
+			printf("0");
+		else
+			printf("%c", num.num[you + i]);
+	}
+	printf("*10^%d", num.flag_xiaoshu - you);
+}
+
+int main(){
+	scanf("%d ", &n);
+
+	char temp;
+	int youxiaowei1 = 0;
+	int weishu1 = 0;
+	while ((temp = getchar()) != ' ' && temp != EOF){
+		if (youxiaowei1 == weishu1 && temp == '0'){
+			num1.num[weishu1] = temp;
+			weishu1++;
+			youxiaowei1++;
+		}
+		else if (temp == '.'){
+			num1.flag_xiaoshu = weishu1;
+		}
+		else{
+			num1.num[weishu1] = temp;
+			weishu1++;
+		}
+	}
+	if (num1.flag_xiaoshu < 0)
+		num1.flag_xiaoshu = weishu1;
+	if (youxiaowei1 == weishu1)
+		youxiaowei1 = num1.flag_xiaoshu;
+
+	int youxiaowei2 = 0;
+	int weishu2 = 0;
+	while ((temp = getchar()) != '\n' && temp != EOF){
+		if (youxiaowei2 == weishu2 && temp == '0'){
+			num2.num[weishu2] = temp;
+			weishu2++;
+			youxiaowei2++;
+		}
+		else if (temp == '.'){
+			num2.flag_xiaoshu = weishu2;
+		}
+		else{
+			num2.num[weishu2] = temp;
+			weishu2++;
+		}
+	}
+	if (num2.flag_xiaoshu < 0)
+		num2.flag_xiaoshu = weishu2;
+	if (youxiaowei2 == weishu2)
+		youxiaowei2 = num2.flag_xiaoshu;
+
+	if (Judge(num1, youxiaowei1, num2, youxiaowei2, n)){
+		printf("YES");
+		Print(num1, youxiaowei1, n);
+	}
+		
+	else{
+		printf("NO");
+		Print(num1, youxiaowei1, n);
+		Print(num2, youxiaowei2, n);
+	}
+
+
+	system("pause");
+	return 0;
+}

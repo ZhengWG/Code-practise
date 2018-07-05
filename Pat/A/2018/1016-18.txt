@@ -1,0 +1,121 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>  
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#pragma warning(disable:4996)
+#define TIME 24
+#define MAX 1010
+using namespace std;
+
+int fees[TIME];
+int n;
+
+struct Call{
+	string id;
+	int month;
+	int day, hour, minute;
+	bool on;
+}calls[MAX];
+
+bool cmp(const Call& call1, const Call& call2){
+	if (call1.id != call2.id)
+		return call1.id < call2.id;
+	if (call1.day != call2.day)
+		return call1.day < call2.day;
+	if (call1.hour != call2.hour)
+		return call1.hour < call2.hour;
+	if (call1.minute != call2.minute)
+		return call1.minute < call2.minute;
+}
+
+int GetFee(Call call1, Call call2){
+	long long total1 = call1.day * 24 * 60 + call1.hour * 60 + call1.minute;
+	long long total2 = call2.day * 24 * 60 + call2.hour * 60 + call2.minute;
+	int i, hours, minutes;
+	float money1 = 0;
+	hours = total1 / 60;
+	minutes = total1 % 60;
+	for (i = 0; i<hours; i++)money1 += fees[i % 24] * 60;
+	money1 += fees[i % 24] * minutes;
+
+	float money2 = 0;
+	hours = total2 / 60;
+	minutes = total2 % 60;
+	for (i = 0; i<hours; i++)money2 += fees[i % 24] * 60;
+	money2 += fees[i % 24] * minutes;
+	float money = money2 - money1;
+    return money;
+}
+
+int GetNum(Call call1, Call call2){
+	int day = call2.day - call1.day;
+	int hour = call2.hour - call1.hour;
+	int minute = call2.minute - call1.minute;
+	int out = day * 24 * 60 + hour * 60 + minute;
+	return out;
+}
+
+int main()
+{
+	for (int i = 0; i < 24; i++){
+		int fee;
+		scanf("%d", &fee);
+		fees[i] = fee;
+	}
+	scanf("%d", &n);
+
+	char id_temp[21];
+	char status[10];
+	for (int i = 0; i < n; i++){
+		scanf("%s", id_temp);
+		scanf("%d:%d:%d:%d", &calls[i].month, &calls[i].day, &calls[i].hour, &calls[i].minute);
+		scanf("%s", status);
+		calls[i].id = id_temp;
+		if (!strcmp(status, "on-line"))
+			calls[i].on = 1;
+		else
+			calls[i].on = 0;
+	}
+	sort(calls, calls + n, cmp);
+
+	string id_now = calls[0].id;
+	vector<float> money;
+	printf("%s ", id_now.c_str());
+	printf("%02d\n", calls[0].month);
+	for (int i = 0; i < n-1; i++){
+		if (id_now != calls[i+1].id){
+			float total_money = 0;;
+			for (vector<float>::iterator it = money.begin(); it != money.end(); it++){
+				total_money += *it;
+			}
+			printf("Total amount: $%.2f\n", total_money);
+			money.clear();
+
+			id_now = calls[i+1].id;
+			printf("%s ", id_now.c_str());
+			printf("%02d\n", calls[i+1].month);
+		}
+		else{
+			if ((calls[i].on) && (!calls[i + 1].on)){
+				printf("%02d:%02d:%02d ", calls[i].day, calls[i].hour, calls[i].minute);
+				printf("%02d:%02d:%02d ", calls[i + 1].day, calls[i + 1].hour, calls[i + 1].minute);
+				int num = GetNum(calls[i], calls[i + 1]);
+				float fee_temp = float(GetFee(calls[i], calls[i+1]))*1.0000/100;
+				printf("%d $%.2f\n", num, fee_temp);
+				money.push_back(fee_temp);
+			}
+		}
+	}
+	float total_money = 0;;
+	for (vector<float>::iterator it = money.begin(); it != money.end(); it++){
+		total_money += *it;
+	}
+	printf("Total amount: $%.2f\n", total_money);
+	money.clear();
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,102 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 30010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+char ch[MAX];
+int p, m, n;
+struct STU{
+	string id;
+	int test;
+	double mid;
+	double final;
+	int grade;
+	bool value;
+	STU() :mid(-1), final(-1){}
+}stus[MAX];
+
+bool cmp(STU s1, STU s2){
+	if (s1.grade == s2.grade)
+		return s1.id < s2.id;
+	return s1.grade > s2.grade;
+}
+
+int main()
+{
+	scanf("%d%d%d", &p, &m, &n);
+	map<string, int> match;
+	int num = 1;
+	for (int i = 0; i < p; i++){
+		string id;
+		cin >> id;
+		if (!match[id]){
+			match[id] = num;
+			scanf("%d", &stus[num].test);
+			stus[num].id = id;
+			num++;
+		}
+		else{
+			scanf("%d", &stus[match[id]].test);
+			stus[num].id = id;
+		}
+	}
+	for (int i = 0; i < m; i++){
+		string id;
+		cin >> id;
+		if (!match[id]){
+			match[id] = num;
+			scanf("%lf", &stus[num].mid);
+			stus[num].id = id;
+			num++;
+		}
+		else{
+			scanf("%lf", &stus[match[id]].mid);
+			stus[num].id = id;
+		}
+	}
+	for (int i = 0; i < n; i++){
+		string id;
+		cin >> id;
+		if (!match[id]){
+			match[id] = num;
+			scanf("%lf", &stus[num].final);
+			stus[num].id = id;
+			num++;
+		}
+		else{
+			scanf("%lf", &stus[match[id]].final);
+			stus[num].id = id;
+		}
+	}
+	vector<STU> out;
+	for (int i = 1; i < num; i++){
+		if (stus[i].test >= 200){
+			if (stus[i].final > stus[i].mid){
+				stus[i].grade = stus[i].final;
+			}
+			else{
+				stus[i].grade = round(stus[i].final*0.6 + stus[i].mid*0.4);
+			}
+			if (stus[i].grade >= 60){
+				out.push_back(stus[i]);
+			}
+		}
+	}
+	sort(out.begin(), out.end(), cmp);
+	for (int i = 0; i < out.size(); i++){
+		printf("%s %d %d %d %d\n", out[i].id.c_str(), out[i].test, int(out[i].mid), int(out[i].final), out[i].grade);
+	}
+
+	system("pause");
+	return 0;
+}

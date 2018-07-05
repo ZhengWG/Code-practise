@@ -1,0 +1,61 @@
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int gcd(int a, int b){
+	if (b == 0)
+		return a;
+	else
+		return gcd(b, a%b);
+}
+
+
+
+int main()
+{
+	int fenzi1, fenmu1, fenzi2, fenmu2, fenmu3;
+	char chuhao;
+	cin >> fenzi1 >> chuhao >> fenmu1;
+	cin >> fenzi2 >> chuhao >> fenmu2;
+	cin >> fenmu3;
+
+	int left = fenmu3*fenzi1 / fenmu1;
+	int right = fenmu3*fenzi2 / fenmu2;
+	if (left > right){
+		int value;
+		value = left;
+		left = right;
+		right = value;
+	}
+	int flag = 0;
+	if (right *fenmu2 == fenmu3*fenzi2){
+		for (int i = left + 1; i < right; i++){
+			if (gcd(i, fenmu3) == 1){
+				if (!flag){
+					cout << i << "/" << fenmu3;
+					flag++;
+				}
+				else
+					cout << " " << i << "/" << fenmu3;
+			}
+
+		}
+	}
+	else{
+		for (int i = left + 1; i < right+1; i++){
+			if (gcd(i, fenmu3) == 1){
+				if (!flag){
+					cout << i << "/" << fenmu3;
+					flag++;
+				}
+				else
+					cout << " " << i << "/" << fenmu3;
+			}
+
+		}
+	}
+
+	system("pause");
+}

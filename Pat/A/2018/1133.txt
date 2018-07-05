@@ -1,0 +1,84 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 100000
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int root, n, value;
+struct Node{
+	int add;
+	int data;
+	int next;
+}nodes[MAX];
+int main()
+{
+	scanf("%d%d%d", &root, &n, &value);
+	for (int i = 0; i < n; i++){
+		int add, data, next;
+		scanf("%d%d%d", &add, &data, &next);
+		nodes[add].add = add;
+		nodes[add].data = data;
+		nodes[add].next = next;
+	}
+	int next = root;
+	vector<Node> n1;
+	vector<Node> n2;
+	vector<Node> n3;
+	vector<Node> n_sum;
+	while (next != -1){
+		n_sum.push_back(nodes[next]);
+		next = nodes[next].next;
+	}
+	for (int i = 0; i < n_sum.size(); i++){
+		if (n_sum[i].data < 0)
+			n1.push_back(n_sum[i]);
+		else if (n_sum[i].data <= value)
+			n2.push_back(n_sum[i]);
+		else
+			n3.push_back(n_sum[i]);
+	}
+	for (int i = 0; i < n1.size(); i++){
+		if (i == n1.size() - 1){
+			if (n2.size())
+				printf("%05d %d %05d\n", n1[i].add, n1[i].data, n2[0].add);
+			else if (n3.size())
+				printf("%05d %d %05d\n", n1[i].add, n1[i].data, n3[0].add);
+			else
+				printf("%05d %d -1\n", n1[i].add, n1[i].data);
+		}
+		else{
+			printf("%05d %d %05d\n", n1[i].add, n1[i].data, n1[i+1].add);
+		}
+	}
+	for (int i = 0; i < n2.size(); i++){
+		if (i == n2.size() - 1){
+			if (n3.size())
+				printf("%05d %d %05d\n", n2[i].add, n2[i].data, n3[0].add);
+			else
+				printf("%05d %d -1\n", n2[i].add, n2[i].data);
+		}
+		else{
+			printf("%05d %d %05d\n", n2[i].add, n2[i].data, n2[i + 1].add);
+		}
+	}
+	for (int i = 0; i < n3.size(); i++){
+		if (i == n3.size() - 1){
+			printf("%05d %d -1\n", n3[i].add, n3[i].data);
+		}
+		else{
+			printf("%05d %d %05d\n", n3[i].add, n3[i].data, n3[i + 1].add);
+		}
+	}
+
+	system("pause");
+	return 0;
+}

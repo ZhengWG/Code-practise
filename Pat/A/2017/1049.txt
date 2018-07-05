@@ -1,0 +1,31 @@
+#include <iostream>
+#include <math.h>
+//P198 <<算法笔记>>
+using namespace std;
+int n;
+int num = 0;
+
+int main(){
+	scanf("%d", &n);//输入
+	int i = 1;
+	int before;//前面的数
+	int after;//后面的数
+	int curr;//当前位
+
+	while (n / i != 0){
+		before = n % i;
+		after = n / (i * 10);
+		curr = (n - after * 10 * i)/i;
+		if (curr == 0)
+			num += after*i;
+		else if(curr == 1)
+			num += after*i + before + 1;
+		else
+			num += (after+1)*i;
+		i *= 10;
+		}
+	printf("%d", num);
+
+	system("pause");
+	return 0;
+}

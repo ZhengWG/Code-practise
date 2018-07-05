@@ -1,0 +1,83 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <string.h>
+#include <iostream>
+#include<queue>  
+#include <vector>
+#pragma warning(disable:4996)
+#define MAX_CU 1010
+#define MAX 25
+using namespace std;
+int n, m, k, q;
+
+struct Cus{
+	int time_start;
+	int time_stop;
+	int time_pro;
+	int line;
+	bool operator < (const Cus cus)const{
+		if (cus.time_stop == time_stop)
+			return line > cus.line;
+		else
+			return time_stop > cus.time_stop;
+	}
+}cus[MAX_CU];
+
+int main(){
+	scanf("%d%d%d%d", &n, &m, &k, &q);
+	for (int i = 0; i < k; i++){
+		scanf("%d", &cus[i].time_pro);
+	}
+	vector<int> query;
+	for (int i = 0; i < q; i++){
+		int q;
+		scanf("%d", &q);
+		query.push_back(q);
+	}
+
+	//队列初始化
+	priority_queue<Cus> queline;
+	int num_cus = 0;
+	int* time_now = new int[n];
+	fill(time_now, time_now + n, 0);
+	//for(int i = 0; i < n; i++) time_now[i] = 0;
+	for (int j = 0; j < m; j++){
+		for (int i = 0; i < n; i++){
+			cus[num_cus].time_start = time_now[i];
+			cus[num_cus].time_stop = cus[num_cus].time_start + cus[num_cus].time_pro;
+			cus[num_cus].line = i;
+			time_now[i] = cus[num_cus].time_stop;
+			queline.push(cus[num_cus]);
+			num_cus++;
+		}
+	}
+
+	//动态排队
+	for (int i = num_cus; i < k; i++){
+		Cus cus_leave = queline.top();
+		queline.pop();
+		cus[i].time_start = time_now[cus_leave.line];
+		cus[i].time_stop = cus[i].time_start + cus[i].time_pro;
+		cus[i].line = cus_leave.line;
+		time_now[cus_leave.line] = cus[i].time_stop;
+		queline.push(cus[i]);
+	}
+	delete[] time_now;
+
+	//输出
+	for (vector<int>::iterator it = query.begin(); it != query.end(); it++){
+		int num = *it;
+		if (cus[*it - 1].time_start >= 540)
+			printf("Sorry\n");
+		else{
+			int hour = cus[*it - 1].time_stop / 60 + 8;
+			int minute = cus[*it - 1].time_stop % 60;
+			printf("%02d:%02d\n", hour, minute);
+		}
+	}
+
+
+	system("pause");
+	return 0;
+}

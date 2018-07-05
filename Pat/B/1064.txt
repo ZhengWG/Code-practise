@@ -1,0 +1,37 @@
+
+#include <iostream>
+#include <iomanip>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+
+int main()
+{
+	int num_friends;
+	cin >> num_friends;
+	int *friends = new int[num_friends];
+	vector<int>num_same(37, -1);
+	vector<int> num;
+	for (int i = 0; i < num_friends; i++){
+		cin >> friends[i];
+		int a, b, c, d;
+		a = friends[i] / 1000;
+		b = friends[i] / 100 - a * 10;
+		c = friends[i] / 10 - a * 100 - b*10;
+		d = friends[i] - a * 1000 - b * 100 - c*10;
+		if (num_same[a + b + c + d] == -1){
+			num.push_back(a + b + c + d);
+			num_same[a + b + c + d] = 1;
+		}
+	}
+	sort(num.begin(), num.end());
+	cout << num.size() << endl;
+	for (vector<int>::iterator it = num.begin(); it != num.end(); it++){
+		if (it == num.begin())
+			cout << *it;
+		else
+			cout << ' ' << *it;
+	}
+}
+

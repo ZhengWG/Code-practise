@@ -1,0 +1,40 @@
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main()
+{
+	int num_students;
+	cin >> num_students;
+	int num_ques;
+	cin >> num_ques;
+	int *point = new int[num_ques];
+	int *answer = new int[num_ques];
+
+	for (int i = 0; i < num_ques; i++){
+		cin >> point[i];
+	}
+
+	for (int i = 0; i < num_ques; i++){
+		cin >> answer[i];
+	}
+
+	int **answer_student = new int*[num_students];
+	for (int i = 0; i < num_students; i++){
+		answer_student[i] = new int[num_ques];
+	}
+
+	vector<int> point_student(num_students, 0);
+	for (int i = 0; i < num_students; i++){
+		for (int j = 0; j < num_ques; j++){
+			cin >> answer_student[i][j];
+			if (answer_student[i][j] == answer[j])
+				point_student[i] = point_student[i]+point[j];
+		}
+	}
+
+	for (vector<int>::iterator it = point_student.begin(); it != point_student.end(); it++){
+		cout << *it << endl;
+	}
+}

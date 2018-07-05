@@ -1,0 +1,66 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 10011
+#pragma warning (disable:4996)
+using namespace std;
+int n, m;
+int nums[MAX] = { 0 };
+int dp[MAX][110] = { 0 };
+int flag[MAX][110] = { 0 };
+
+bool cmp(int n1, int n2){
+	return n1 > n2;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i + 1]);
+	}
+	sort(nums + 1, nums + 1 + n, cmp);
+
+	for (int i = 1; i <= n; i++){
+		for (int j = nums[i]; j <= m; j++){
+			if (dp[i - 1][j] > dp[i - 1][j - nums[i]] + nums[i]){
+				dp[i][j] = dp[i - 1][j];
+			}
+			else{
+				dp[i][j] = dp[i - 1][j - nums[i]] + nums[i];
+				flag[i][j] = 1;
+			}
+		}
+	}
+	vector<int> out;
+	if (dp[n][m] == m){
+		while (m){
+			while (flag[n][m] == 0)
+				n = n-1;
+			out.push_back(nums[n]);
+			m -= nums[n];
+			n--;
+		}
+	}
+	else{
+		printf("No Solution\n");
+		return 0;
+	}
+
+	for (int i = 0; i < out.size(); i++){
+		if (i == out.size() - 1)
+			printf("%d", out[i]);
+		else
+			printf("%d ", out[i]);
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,95 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 1001
+#pragma warning (disable:4996)
+using namespace std;
+int n, k;
+int we[MAX];
+int n_rank[MAX];
+int nums[MAX];
+queue<int> order;
+
+int compare(queue<int> mems){
+	int ord;
+	int max_n = -1;
+	while (!mems.empty()){
+		if (we[mems.front()] > max_n){
+			max_n = we[mems.front()];
+			ord = mems.front();
+		}
+		mems.pop();
+	}
+	return ord;
+}
+
+void Rank(queue<int> mems, int ord, int num_r){
+	while (!mems.empty()){
+		if (mems.front() != ord){
+			n_rank[mems.front()] = num_r+1;
+		}
+		mems.pop();
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &k);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &we[i]);
+	}
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i]);
+		order.push(nums[i]);
+	}
+	while (order.size() > 1){
+		queue <int> newmem;
+		int size = order.size();
+		int num_gr;
+		if (size % k == 0)
+			num_gr = size / k;
+		else
+			num_gr = size / k + 1;
+		for (int i = 0; i < num_gr; i++){
+			int next;
+			queue<int> input;
+			if (order.size() >= k){
+				for(int q = 0; q < k; q++){
+					input.push(order.front());
+					order.pop();
+				}
+				next = compare(input);
+				Rank(input, next, num_gr);
+				newmem.push(next);
+			}
+			else{
+				while (!order.empty()){
+					input.push(order.front());
+					order.pop();
+				}
+				next = compare(input);
+				Rank(input, next, num_gr);
+				newmem.push(next);
+			}
+		}
+		order = newmem;
+	}
+	n_rank[order.front()] = 1;
+	for (int i = 0; i < n; i++){
+		if (i == n - 1)
+			printf("%d", n_rank[i]);
+		else
+			printf("%d ", n_rank[i]);
+	}
+
+	system("pause");
+	return 0;
+}

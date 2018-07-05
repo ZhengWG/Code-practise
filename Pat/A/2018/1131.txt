@@ -1,0 +1,140 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10000
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+vector<vector<int>> G(10000);
+int L[MAX][MAX];
+bool vis[MAX];
+struct STA{
+	vector<int> lines;
+}stas[10000];
+int min_s, min_l;
+vector<int> Path;
+vector<int> Line;
+vector<int> tempPath;
+vector<int> temp_l;
+
+int Getlines(vector<int> line){
+	int num = 1;
+	for (int i = 1; i < line.size(); i++){
+		if (line[i] != line[i - 1])
+			num++;
+	}
+	return num;
+}
+
+void DFS(int s, int e, int n_s, vector<int> temp_l){
+	if (s == e){
+		tempPath.push_back(s);
+		if (n_s < min_s){
+			Path = tempPath;
+			Line = temp_l;
+			min_s = n_s;
+			min_l = Getlines(temp_l);
+		}
+		else if (n_s == min_s){
+			if (Getlines(temp_l) < min_l){
+				Path = tempPath;
+				Line = temp_l;
+				min_s = n_s;
+				min_l = Getlines(temp_l);
+			}
+		}
+		tempPath.pop_back();
+		return;
+	}
+	else{
+		for (int i = 0; i < G[s].size(); i++){
+			n_s++;
+			tempPath.push_back(s);
+			if (!vis[G[s][i]]){
+				vis[G[s][i]] = 1;
+				temp_l.push_back(L[s][G[s][i]]);
+				DFS(G[s][i], e, n_s, temp_l);
+				vis[G[s][i]] = 0;
+				temp_l.pop_back();
+			}
+			n_s--;
+			tempPath.pop_back();
+		}
+	}
+}
+
+void Print(vector<int> stop, vector<int> Line){
+
+
+	int size = stop.size();
+	printf("%d\n", size - 1);
+	if (size){
+		int pre_line = Line[0];
+		int pre = stop[0];
+		for (int i = 1; i < size; i++){
+			printf("Take Line#%d from %04d to ", pre_line, pre);
+			while (i < size - 1 && pre_line == Line[i]){
+				i++;
+			}
+			if (i == size - 1){
+				printf("%04d.\n", stop[i]);
+				break;
+			}
+			else{
+				pre_line = Line[i];
+				printf("%04d.\n", stop[i]);
+			}
+			pre = stop[i];
+			i--;
+		}
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++){
+		int m;
+		scanf("%d", &m);
+		int s1, s2;
+		scanf("%d", &s1);
+		for (int j = 1; j < m; j++){
+			scanf("%d", &s2);
+			L[s2][s1] = i;
+			L[s1][s2] = i;
+			G[s1].push_back(s2);
+			G[s2].push_back(s1);
+			s1 = s2;
+		}
+	}
+	int k;
+	scanf("%d", &k);
+	for (int i = 0; i < k; i++){
+		int start, stop;
+		scanf("%d%d", &start, &stop);
+		Path.clear();
+		tempPath.clear();
+		Line.clear();
+		min_s = INF;
+		min_l = INF;
+		int n_s = 0;
+		fill(vis, vis + MAX, 0);
+		temp_l.clear();
+		vis[start] = 1;
+		DFS(start, stop, n_s, temp_l);
+		Print(Path, Line);
+	}
+
+	system("pause");
+	return 0;
+}

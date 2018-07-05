@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <algorithm>
+//《算法笔记理论》P385 属于Dijkstra+DFS的经典应用例题
+
+#define MAX 510
+#define INF 1000000000
+
+using namespace std;
+
+int n, m, st, ed;
+int d[MAX], cost[MAX][MAX], Gra[MAX][MAX];
+vector<int> path, tempPath, pre[MAX];
+bool vis[MAX] = { false };
+
+void Dijsktra(int s){
+	fill(d, d + MAX, INF);
+	d[s] = 0;
+	for (int i = 0; i < n; i++){
+		int u = -1;
+		int MIN = INF;
+		for (int j = 0; j < n; j++){
+			if (vis[j] == false && d[j] < MIN){
+				u = j;
+				MIN = d[j];
+			}
+		}
+		if (u == -1)
+			return;
+		vis[u] = true;
+		for (int v = 0; v < n; v++){
+			if (Gra[u][v] != INF&&vis[v] == false){
+				if (d[v] > d[u] + Gra[u][v]){
+					d[v] = d[u] + Gra[u][v];
+					pre[v].clear();
+					pre[v].push_back(u);
+				}
+				else if (d[v] == d[u] + Gra[u][v])
+					pre[v].push_back(u);
+			}
+		}
+
+	}
+}
+
+int finalCost = INF;
+void DFS(int v){
+	//	递归边界
+	if (v == st){
+		tempPath.push_back(v);
+		int value = 0;
+		for (int i = 0; i < tempPath.size()-1; i++){
+			value += cost[tempPath[i]][tempPath[i+1]];
+		}
+		if (value < finalCost){
+			finalCost = value;
+			path = tempPath;
+		}
+		tempPath.pop_back();
+	}
+	//递归式
+	tempPath.push_back(v);
+	for (int i = 0; i < pre[v].size(); i++){
+		DFS(pre[v][i]);
+	}
+	tempPath.pop_back();
+}
+
+int main(){
+	fill(Gra[0], Gra[0]+MAX*MAX, INF);
+	fill(cost[0], cost[0]+MAX*MAX, 0);
+
+	scanf("%d%d%d%d", &n, &m, &st, &ed);
+
+	for (int i = 0; i < m; i++){
+		int city1, city2, dis, cos;
+		scanf("%d%d%d%d", &city1, &city2, &dis, &cos);
+		Gra[city1][city2] = dis;
+		Gra[city2][city1] = dis;
+		cost[city1][city2] = cos;
+		cost[city2][city1] = cos;
+	}
+	Dijsktra(st);
+	DFS(ed);
+	for (int i = path.size()-1; i > -1; i--){
+		printf("%d ", path[i]);
+	}
+	printf("%d ", d[ed]);
+	printf("%d", finalCost);
+
+
+	system("pause");
+	return 0;
+}

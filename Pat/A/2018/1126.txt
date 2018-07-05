@@ -1,0 +1,83 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//一定要是连通图，要判断是否连通图
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 510
+#pragma warning (disable:4996)
+using namespace std;
+int n, m;
+bool vis[MAX];
+struct Node{
+	int v;
+	vector<int> other;
+}nodes[MAX];
+
+int Judge(vector<int> out){
+	int num = 0;
+	for (int i = 0; i < out.size(); i++){
+		if (out[i] % 2 == 1)
+			num++;
+	}
+	return num;
+}
+void DFS(int root){
+	if (vis[root]){
+		return;
+	}
+	else{
+		vis[root] = 1;
+		for (int i = 0; i < nodes[root].other.size(); i++){
+			DFS(nodes[root].other[i]);
+		}
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= m; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		nodes[a].other.push_back(b);
+		nodes[b].other.push_back(a);
+	}
+	DFS(1);
+	int flag = 1;
+	for (int i = 1; i <= n; i++){
+		if (!vis[i]){
+			flag = 0;
+			break;
+		}
+	}
+	vector<int> degrees;
+	for (int i = 1; i <= n; i++){
+		if (i == n){
+			printf("%d\n", nodes[i].other.size());
+		}
+		else{
+			printf("%d ", nodes[i].other.size());
+		}
+		degrees.push_back(nodes[i].other.size());
+	}
+	int out = Judge(degrees);
+	if (out == 0 && flag){
+		printf("Eulerian");
+	}
+	else if (out == 2 && flag){
+		printf("Semi-Eulerian");
+	}
+	else{
+		printf("Non-Eulerian");
+	}
+
+	system("pause");
+	return 0;
+}

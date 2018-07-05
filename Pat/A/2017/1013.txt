@@ -1,0 +1,96 @@
+#include <iostream>
+//算法笔记：P339
+
+#define MAX_CITIES 1002
+
+using namespace std;
+
+typedef struct Edge* LEdge;
+struct Edge{
+	int point_D;//邻接点的数值
+	LEdge next;//下一条边
+};
+
+typedef struct Point* LPoint;
+typedef struct Point{
+	int data;//顶点信息
+	LEdge firstedge;
+}Point;
+
+
+typedef struct Gra* LGra;
+struct Gra{
+	Point points[MAX_CITIES];
+	int n, e;//n个结点，e条边
+
+};
+
+
+int n;//城市数目
+int m;//街道
+int k;//检查的城市
+
+void CreateMap(LGra gra, int n, int m){
+	gra->n = n;
+	gra->e = m;
+	LEdge newedge;
+	for (int i = 0; i < m; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		newedge = (LEdge)malloc(sizeof(Edge));
+		newedge->point_D = b;
+		newedge->next = gra->points[a].firstedge;
+		gra->points[a].firstedge = newedge;
+
+		newedge = (LEdge)malloc(sizeof(Edge));
+		newedge->point_D = a;
+		newedge->next = gra->points[b].firstedge;
+		gra->points[b].firstedge = newedge;
+	}
+		
+}
+
+void DFS(LGra gra, int i, int de_point, bool* visited){//遍历i所在的连通块
+	if (i == de_point)
+		return;
+	visited[i] = true;
+	LEdge edge = gra->points[i].firstedge;
+	while (edge != NULL){
+		if (!visited[edge->point_D])//未访问结点
+			DFS(gra, edge->point_D, de_point, visited);
+		edge = edge->next;
+	}
+	return;
+}
+
+int main(){
+	scanf("%d", &n);
+	scanf("%d", &m);
+	scanf("%d", &k);
+
+	LGra graph = new struct Gra;
+	for (int i = 0; i < MAX_CITIES; i++){
+		graph->points[i].firstedge = NULL;
+		graph->points[i].data = i;
+	}
+	CreateMap(graph, n, m);
+
+	for (int i = 1; i < k+1; i++){
+		int del_n;
+		scanf("%d", &del_n);
+		bool visited[MAX_CITIES];
+		for (int j = 0; j < MAX_CITIES; j++){
+			visited[j] = 0;
+		}
+		int block = 0;
+		for (int q = 1; q < n + 1; q++){
+			if (!visited[q] && q != del_n){
+				DFS(graph, q, del_n, visited);
+				block++;
+			}
+		}
+		printf("%d\n", --block);
+			
+	}
+	system("pause");
+}

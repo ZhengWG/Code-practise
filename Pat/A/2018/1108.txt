@@ -1,0 +1,90 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 110
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+string sts[MAX];
+
+int cnt = 0;
+double num;
+bool Judge(string s){
+	int len = s.length();
+	int wei = len;
+	int wei_n = 0;
+	if (s[0] == '-'){
+		for (int i = 1; i < len; i++){
+			if (!((s[i] >= '0' && s[i] <= '9') || s[i] == '.')){
+				printf("ERROR: %s is not a legal number\n", s.c_str());
+				return 0;
+			}
+			else if (s[i] == '.'){
+				wei = i;
+				wei_n++;
+			}
+		}
+	}
+	else{
+		for (int i = 0; i < len; i++){
+			if (!((s[i] >= '0' && s[i] <= '9') || s[i] == '.')){
+				printf("ERROR: %s is not a legal number\n", s.c_str());
+				return 0;
+			}
+			else if (s[i] == '.'){
+				wei = i;
+				wei_n++;
+			}
+		}
+	}
+	if (len - wei > 3 || wei_n > 1){
+		printf("ERROR: %s is not a legal number\n", s.c_str());
+		return 0;
+	}
+	num = atof(s.c_str());
+	if (num > 1000 || num < -1000){
+		printf("ERROR: %s is not a legal number\n", s.c_str());
+		num = 0;
+		return 0;
+	}
+	cnt++;
+	return 1;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		cin >> sts[i];
+	}
+
+	double sum = 0;
+	for (int i = 0; i < n; i++){
+		num = 0;
+		bool flag = Judge(sts[i]);
+		if (flag){
+			sum += num;
+		}
+	}
+
+	if (!cnt){
+		printf("The average of 0 numbers is Undefined\n");
+	}
+	else{
+		if (cnt ==1)
+			printf("The average of %d number is %.2lf\n", cnt, sum / (cnt*1.0000));
+		else
+			printf("The average of %d numbers is %.2lf\n", cnt, sum/(cnt*1.0000));
+	}
+
+	system("pause");
+	return 0;
+}

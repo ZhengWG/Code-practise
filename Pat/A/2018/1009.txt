@@ -1,0 +1,59 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#define MAX_NUM_1 1010
+#define MAX_NUM_2 2010
+#pragma warning(disable:4996)
+using namespace std;
+double a[MAX_NUM_1];
+double b[MAX_NUM_1];
+double sum[MAX_NUM_2];
+
+int main()
+{
+	int num = 0;
+	memset(a, 0, MAX_NUM_1);
+	memset(b, 0, MAX_NUM_1);
+	memset(sum, 0, MAX_NUM_2);
+
+	scanf("%d", &num);
+	for (int i = 0; i < num; i++){
+		int p;
+		double q;
+		scanf("%d%lf", &p, &q);
+		a[p] = q;
+	}
+
+	scanf("%d", &num);
+	for (int i = 0; i < num; i++){
+		int p;
+		double q;
+		scanf("%d%lf", &p, &q);
+		b[p] = q;
+	}
+
+	int count = 0;
+	for (int i = 0; i < MAX_NUM_1; i++){
+		for (int j = 0; j < MAX_NUM_1; j++){
+			if (a[i] != 0 && b[j] != 0){
+				if (sum[i + j] == 0)
+					count++;
+				sum[i + j] += a[i] * b[j];
+				if (sum[i + j] == 0)
+					count--;//注意正负相消的情况
+			}
+		}
+	}
+
+	printf("%d", count);
+	for (int i = MAX_NUM_2-1; i >= 0; i--){
+		if (sum[i] != 0)
+			printf(" %d %.1lf", i, sum[i]);
+	}
+
+	system("pause");
+	return 0;
+}
+

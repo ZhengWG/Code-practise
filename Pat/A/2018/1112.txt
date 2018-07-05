@@ -1,0 +1,66 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 510
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+string s;
+int Not_stuck[40];
+int change(char w){
+	if (w >= '0' && w <= '9')
+		return w - '0';
+	else if (w >= 'a' && w <= 'z')
+		return w - 'a' + 10;
+	else
+		return 36;
+
+}
+int main()
+{
+	scanf("%d", &n);
+	cin >> s;
+	int wei = 0;
+	char temp = s[wei];
+	while (wei < s.length()){
+		int cho = 1;
+		wei++;
+		while (temp == s[wei] && wei < s.length()){
+			cho++;
+			wei++;
+		}	
+		if (cho % n != 0){
+			Not_stuck[change(temp)]=1;
+		}
+		temp = s[wei];
+	}
+	
+	for (int i = 0; i < s.length(); i++){
+		if (!Not_stuck[change(s[i])]){
+			Not_stuck[change(s[i])] = 2;
+			printf("%c", s[i]);
+		}
+	}
+	printf("\n");
+	for (int i = 0; i < s.length(); i++){
+		if (Not_stuck[change(s[i])] == 1){
+			printf("%c", s[i]);
+		}
+		else{
+			printf("%c", s[i]);
+			i += n-1;
+		}
+	}
+
+	system("pause");
+	return 0;
+}

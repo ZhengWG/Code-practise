@@ -1,0 +1,106 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 35
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int Post[MAX], In[MAX];
+
+struct Node{
+	int data;
+	int layer;
+	Node* lchild;
+	Node* rchild;
+};
+int la = 0;
+Node* Create(int postL, int postR, int inL, int inR){
+	if (postL > postR)
+		return NULL;
+	Node* root = new Node;
+	root->data = Post[postR];
+	root->layer = la;
+	int i;
+	for (i = inL; i <= inR; i++){
+		if (In[i] == Post[postR])
+			break;
+	}
+	int numleft = i - inL;
+	la++;
+	root->lchild = Create(postL, postL + numleft - 1, inL, i-1);
+	root->rchild = Create(postL + numleft, postR - 1, i + 1, inR);
+	la--;
+	return root;
+}
+vector<Node*> out;
+void BFS(Node* root){
+	queue<Node*> qu;
+	qu.push(root);
+	while (!qu.empty()){
+		Node* tmp = qu.front();
+		qu.pop();
+		out.push_back(tmp);
+		if (tmp->lchild != NULL)
+			qu.push(tmp->lchild);
+		if (tmp->rchild != NULL)
+			qu.push(tmp->rchild);
+	}
+	return;
+}
+
+void Print(vector<Node*> no, int left, int right){
+	if (left < right){
+		for (int i = left; i <= right; i++)
+			printf(" %d", out[i]->data);
+	}
+	else{
+		for (int i = left; i >= right; i--)
+			printf(" %d", out[i]->data);
+	}
+	return;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &In[i]);
+	}
+	for (int i = 0; i < n; i++){
+		scanf("%d", &Post[i]);
+	}
+	Node* root = Create(0, n - 1, 0, n - 1);
+	BFS(root);
+	printf("%d", out[0]->data);
+	bool flag = 1;
+	int tmp_layer = 1;
+	int left = 1, right = 1;
+	for (int i = 1; i < out.size(); i++){
+		int left = i;
+		while (i<out.size() && tmp_layer == out[i]->layer){
+			i++;
+		}
+		i--;
+		int right = i;
+		if (flag){
+			Print(out, left, right);
+		}
+		else{
+			Print(out, right, left);
+		}
+		tmp_layer++;
+		flag = !flag;
+	}
+
+	system("pause");
+	return 0;
+}

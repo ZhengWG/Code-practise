@@ -1,0 +1,102 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#pragma warning (disable:4996)
+using namespace std;
+int group[MAX][MAX];
+int n, k;
+struct Per{
+	int v;
+	int height;
+	string name;
+}pers[MAX];
+
+bool cmp(Per p1, Per p2){
+	if (p1.height == p2.height)
+		return p1.name < p2.name;
+	return p1.height > p2.height;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &k);
+	for (int i = 0; i < n; i++){
+		cin >> pers[i].name >> pers[i].height;
+		pers[i].v = i;
+	}
+	sort(pers, pers + n, cmp);
+
+	int row = n / k;
+	int row_f =  n - row*(k - 1);
+
+	
+	int mid = row_f / 2 + 1;
+	int left = mid - 1;
+	int right = mid + 1;
+	int flag = 1;
+	int cnt = 0;
+	group[0][mid] = cnt;
+	cnt++;
+	while (left >= 1 || right <= row_f){
+		if (left >= 1 && flag){
+			group[0][left] = cnt;
+			cnt++;
+			left--;
+			flag = 0;
+		}
+		else if (right <= row_f && !flag){
+			group[0][right] = cnt;
+			cnt++;
+			right++;
+			flag = 1;
+		}
+	}
+	for (int i = 1; i < k; i++){
+		mid = row / 2 + 1;
+		left = mid - 1;
+		right = mid + 1;
+		group[i][mid] = cnt;
+		cnt++;
+		flag = 1;
+		while (left >= 1 || right <= row){
+			if (left >= 1 && flag){
+				group[i][left] = cnt;
+				cnt++;
+				left--;
+				flag = 0;
+			}
+			else if (right <= row && !flag){
+				group[i][right] = cnt;
+				cnt++;
+				right++;
+				flag = 1;
+			}
+		}
+	}
+	for (int i = 1; i <= row_f; i++){
+		if (i==row_f)
+			printf("%s\n", pers[group[0][i]].name.c_str());
+		else
+			printf("%s ", pers[group[0][i]].name.c_str());
+	}
+	for (int j = 1; j < k; j++){
+		for (int i = 1; i <= row; i++){
+			if (i == row)
+				printf("%s\n", pers[group[j][i]].name.c_str());
+			else
+				printf("%s ", pers[group[j][i]].name.c_str());
+		}
+	}
+
+	system("pause");
+	return 0;
+}

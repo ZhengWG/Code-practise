@@ -1,0 +1,25 @@
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+
+int main()
+{
+	int a;
+	cin >> a;
+	vector <int> num;
+	int out;
+	for (int i = 0; i < a; i++){
+		int b;
+		cin >> b;
+		num.push_back(b);
+	}
+	sort(num.begin(), num.end());
+	out = num[0];
+	for (int i = 1; i < a; i++)
+		out = (out + num[i]) / 2;
+	cout << out;
+}
+

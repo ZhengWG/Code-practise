@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+
+
+#define MAX 110
+
+using namespace std;
+
+vector<int> nodes[MAX];
+int num[MAX];
+int n;
+int m;
+
+void DFS(vector<int> father, int layer){
+	for (vector<int>::iterator it = father.begin(); it != father.end(); it++){
+		if (nodes[*it].size() == 0)
+			num[layer]++;
+		else
+			DFS(nodes[*it], layer+1);
+	}
+	return;
+}
+
+int main(){
+	scanf("%d", &n);
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++){
+		int id, num_ch, id_ch;
+		scanf("%d%d", &id, &num_ch);
+		for (int j = 0; j < num_ch; j++){
+			scanf("%d", &id_ch);
+			nodes[id].push_back(id_ch);
+		}
+
+	}
+
+	for (int i = 0; i < MAX; i++)
+		num[i] = 0;
+	if (m == 0){
+		printf("1");
+	}
+	else{
+		DFS(nodes[01], 1);
+		int i;
+		for (i = MAX - 1; i > -1; i--)
+			if (num[i] != 0)
+				break;
+		for (int j = 0; j < i; j++)
+			printf("%d ", num[j]);
+		printf("%d", num[i]);
+	}
+	system("pause");
+
+}

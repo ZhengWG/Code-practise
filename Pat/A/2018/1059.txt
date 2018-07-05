@@ -1,0 +1,77 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 21
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+vector<int> final;
+
+bool JudgeP(int num){
+	if (num == 2)
+		return true;
+	int tmp = sqrt(num) + 1;
+	for (int i = 2; i <= tmp; i++){
+		if (num%i == 0)
+			return false;
+	}
+	return true;
+}
+
+int main()
+{	
+	scanf("%d", &n);
+	
+	int tmp = n;
+	vector<int> out;
+	if (tmp == 1){
+		printf("1=1");
+		return 0;
+	}
+	while (tmp != 1){
+		for (int i = 2; i <= tmp; i++){
+			if (tmp%i == 0 && JudgeP(i)){
+				tmp = tmp / i;
+				out.push_back(i);
+			}
+		}
+	}
+
+	sort(out.begin(), out.end());
+	final.push_back(out[0]);
+	final.push_back(1);
+	for (int i = 1; i < out.size(); i++){
+		if (out[i] == out[i - 1]){
+			final[final.size() - 1]++;
+		}
+		else{
+			final.push_back(out[i]);
+			final.push_back(1);
+		}
+	}
+
+	printf("%d=", n);
+	for (int i = 0; i < final.size()-1; i++){
+		if (final[i+1] == 1){
+			printf("%d", final[i]);
+		}
+		else{
+			printf("%d", final[i]);
+			printf("^%d", final[i+1]);
+		}
+		if (i != final.size() - 2){
+			printf("*");
+		}
+		i++;
+	}
+
+	system("pause");
+	return 0;
+}

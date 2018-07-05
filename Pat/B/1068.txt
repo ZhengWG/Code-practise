@@ -1,0 +1,58 @@
+#include <vector>
+#include <iostream>
+using namespace std;
+
+
+int main()
+{
+	int a, b, c;
+	cin >> a;
+	cin >> b;
+	cin >> c;
+	//建立二维动态数组
+	int **array = new int*[a];
+	for (int i = 0; i < a; i++)
+		array[i] = new int[b];
+	for (int i = 0; i < a; i++){
+		for (int j = 0; j < b; j++){
+			int num_input;
+			cin >> num_input;
+			array[i][j] = num_input;
+		}
+	}
+
+
+	int num_right = 0;
+	int num_a, num_b, num_c;
+	for (int i = 1; i < a-1; i++){
+		for (int j = 1; j < b-1; j++){
+			int a_1 = abs(array[i][j] - array[i - 1][j]);
+			int a_2 = abs(array[i][j] - array[i][j - 1]);
+			int a_3 = abs(array[i][j] - array[i][j + 1]);
+			int a_4 = abs(array[i][j] - array[i + 1][j]);
+			if (a_1>c && a_2>c && a_3 > c && a_4 > c){
+				num_right++;
+				num_a = i+1;
+				num_b = j+1;
+				num_c = array[i][j];
+
+			}
+			if (num_right == 2)
+				break;
+		}
+		if (num_right == 2)
+			break;
+	}
+	if (num_right == 0)
+		cout << "No Exist";
+	else if (num_right > 1)
+		cout << "Not Unique";
+	else
+		cout << "(" << num_a << "," << ")" << ":" << num_c;
+
+	for (int i = 0; i < a; i++)
+		delete[] array[i];
+	delete[] array;
+
+}
+

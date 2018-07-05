@@ -1,0 +1,38 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 10010
+#pragma warning (disable:4996)
+using namespace std;
+int flag[MAX] = { 0 };
+string s1;
+string s2;
+char w1[MAX];
+char w2[MAX];
+
+int main()
+{	
+	gets(w1);
+	gets(w2);
+	s1 = w1;
+	s2 = w2;
+
+	for (int i = 0; i < s2.size(); i++){
+		flag[s2[i]] = 1;
+	}
+
+	for (int i = 0; i < s1.size(); i++){
+		if (flag[s1[i]] == 0)
+			printf("%c", s1[i]);
+	}
+
+	system("pause");
+	return 0;
+}

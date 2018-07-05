@@ -1,0 +1,74 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 100100
+#pragma warning (disable:4996)
+using namespace std;
+int n, k;
+struct Per{
+	string name;
+	int age;
+	int money;
+}pers[MAX];
+
+bool cmp(Per per1, Per per2){
+	if (per1.money == per2.money){
+		if (per1.age == per2.age)
+			return per1.name < per2.name;
+		return per1.age < per2.age;
+	}
+	return per1.money > per2.money;
+}
+
+int main()
+{
+	scanf("%d%d", &n, &k);
+	int max_a = -1;
+	int min_a = 201;
+	for (int i = 0; i < n; i++){
+		cin >> pers[i].name >> pers[i].age >> pers[i].money;
+		if (pers[i].age > max_a)
+			max_a = pers[i].age;
+		if (pers[i].age < min_a)
+			min_a = pers[i].age;
+	}
+	sort(pers, pers + n, cmp);
+
+	for (int i = 1; i <= k; i++){
+		int a, b, c;
+		scanf("%d%d%d", &a, &b, &c);
+		vector<Per> men;
+		printf("Case #%d:\n", i);
+		if (b>c || b > max_a || c < min_a){
+			printf("None\n");
+		}
+		else{
+			for (int j = 0; j < n; j++){
+				if (men.size() == a)
+					break;
+				if (pers[j].age >= b && pers[j].age <= c){
+					men.push_back(pers[j]);
+				}
+			}
+			if (!men.size())
+				printf("None\n");
+			else{
+				for (int q = 0; q < men.size(); q++){
+					printf("%s %d %d\n", men[q].name.c_str(), men[q].age, men[q].money);
+				}
+			}
+		}
+
+		men.clear();
+	}
+
+	system("pause");
+	return 0;
+}

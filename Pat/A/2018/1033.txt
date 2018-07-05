@@ -1,0 +1,123 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <queue>
+#define MAX 510
+#pragma warning (disable:4996)
+using namespace std;
+int Cmax, D, Davg, N;
+struct Sta{
+	int num;
+	double price;
+    double d;
+}stas[MAX];
+
+bool cmp(Sta sta1, Sta sta2){
+	return sta1.d < sta2.d;
+}
+
+bool cmp1(Sta sta1, Sta sta2){
+	return sta1.price < sta2.price;
+}
+
+int main()
+{	
+	scanf("%d%d%d%d", &Cmax, &D, &Davg, &N);
+	for (int i = 0; i < N; i++){
+		double price;
+		double d;
+		scanf("%lf%lf", &price, &d);
+		stas[i].d = d;
+		stas[i].price = price;
+	}
+	sort(stas,stas+N,cmp);
+
+	if (stas[0].d != 0){
+		printf("The maximum travel distance = 0.00");
+		return 0;
+	}
+
+	for (int i = 0; i < N; i++){
+		stas[i].num = i;
+	}
+	double D_max = Cmax*Davg;
+	double D_curr = 0, T_curr = 0;
+	double P_curr = stas[0].price;
+	double Fee = 0;
+	int cnt = 0;
+	vector<Sta> inrange;
+	bool flag = true;
+
+	while (D_curr < D){
+		for (int i = cnt; i < N; i++){
+			if (stas[i].d - D_curr <= D_max){
+				inrange.push_back(stas[i]);
+			}
+		}
+		if (inrange.size()){
+			Sta next;
+			bool find = false;
+			for (int j = 0; j < inrange.size(); j++){
+				if (inrange[j].price <= P_curr){
+					next = inrange[j];
+					find = true;
+					break;
+				}
+			}
+			if (find){
+				Fee += ((next.d - D_curr) / Davg - T_curr) * P_curr;
+				T_curr = 0;
+				D_curr = next.d;
+				P_curr = next.price;
+				cnt = next.num;
+			}
+			else{
+				sort(inrange.begin(), inrange.end(), cmp1);
+				if (D_curr + Cmax*Davg >= D){
+					Fee += ((D-D_curr)/Davg - T_curr) * P_curr;
+					T_curr = 0;
+					D_curr = D;
+					P_curr = 0;
+					break;
+				}
+				else{
+					Fee += (Cmax - T_curr) * P_curr;
+					T_curr = Cmax - (inrange[0].d - D_curr) / Davg;
+					D_curr = inrange[0].d;
+					P_curr = inrange[0].price;
+					cnt = inrange[0].num;
+				}
+			}
+		}
+		else {
+			if (D_curr + Cmax*Davg >= D){
+				Fee += ((D - D_curr) / Davg - T_curr) * P_curr;
+				T_curr = 0;
+				D_curr = D;
+				P_curr = 0;
+				break;
+			}
+			else{
+				D_curr = D_curr + Cmax * Davg;
+				flag = false;
+				break;
+			}
+
+		}
+		inrange.clear();
+		cnt++;
+	}
+
+	if (flag)
+		printf("%.2lf", Fee);
+	else
+		printf("The maximum travel distance = %.2lf", D_curr);
+
+	system("pause");
+	return 0;
+}

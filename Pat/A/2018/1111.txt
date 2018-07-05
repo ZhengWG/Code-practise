@@ -1,0 +1,212 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 510
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n, m;
+int D[MAX][MAX];
+int T[MAX][MAX];
+int s, f;
+bool vis_d[MAX];
+bool vis_t[MAX];
+int d[MAX];
+vector<int> pre_d[MAX];
+int t[MAX];
+vector<int> pre_t[MAX];
+
+void Dijska_d(int root){
+	fill(d, d + MAX, INF);
+	d[root] = 0;
+	for (int i = 0; i < n; i++){
+		int u = -1;
+		int min_d = INF;
+		for (int j = 0; j < n; j++){
+			if (d[j] < min_d && !vis_d[j]){
+				u = j;
+				min_d = d[j];
+			}
+		}
+		if (u == -1)
+			return;
+		vis_d[u] = 1;
+		for (int v = 0; v < n; v++){
+			if (D[u][v] != INF && !vis_d[v]){
+				if (d[v]>d[u] + D[u][v]){
+					pre_d[v].clear();
+					pre_d[v].push_back(u);
+					d[v] = d[u] + D[u][v];
+				}
+				else if (d[v] == d[u] + D[u][v]){
+					pre_d[v].push_back(u);
+				}
+			}
+		}
+	}
+}
+void Dijska_t(int root){
+	fill(t, t + MAX, INF);
+	t[root] = 0;
+	for (int i = 0; i < n; i++){
+		int u = -1;
+		int min_t = INF;
+		for (int j = 0; j < n; j++){
+			if (t[j] < min_t && !vis_t[j]){
+				u = j;
+				min_t = t[j];
+			}
+		}
+		if (u == -1)
+			return;
+		vis_t[u] = 1;
+		for (int v = 0; v < n; v++){
+			if (T[u][v] != INF && !vis_t[v]){
+				if (t[v]>t[u] + T[u][v]){
+					pre_t[v].clear();
+					pre_t[v].push_back(u);
+					t[v] = t[u] + T[u][v];
+				}
+				else if (t[v] == t[u] + T[u][v]){
+					pre_t[v].push_back(u);
+				}
+			}
+		}
+	}
+}
+vector<vector<int>> Path_d;
+vector<int> tempPath_d;
+int min_d;
+int temp_d;
+int min_t;
+int temp_t;
+void DFS_d(int v){
+	if (v == s){
+		tempPath_d.push_back(v);
+		tempPath_d.push_back(temp_t);
+		if (temp_d < min_d){
+			Path_d.clear();
+			min_d = temp_d;
+			Path_d.push_back(tempPath_d);
+		}
+		else if (temp_d == min_d)
+			Path_d.push_back(tempPath_d);
+		tempPath_d.pop_back();
+		tempPath_d.pop_back();
+	}
+	tempPath_d.push_back(v);
+	for (int j = 0; j < pre_d[v].size(); j++){
+		temp_d += D[pre_d[v][j]][v];
+		temp_t += T[pre_d[v][j]][v];
+		DFS_d(pre_d[v][j]);
+		temp_t -= T[pre_d[v][j]][v];
+		temp_d -= D[pre_d[v][j]][v];
+	}
+	tempPath_d.pop_back();
+}
+
+vector<vector<int>> Path_t;
+vector<int> tempPath_t;
+void DFS_t(int v){
+	if (v == s){
+		tempPath_t.push_back(v);
+		tempPath_t.push_back(tempPath_t.size());
+		if (temp_t < min_t){
+			Path_t.clear();
+			min_t = temp_t;
+			Path_t.push_back(tempPath_t);
+		}
+		else if (temp_t == min_t)
+			Path_t.push_back(tempPath_t);
+		tempPath_t.pop_back();
+		tempPath_t.pop_back();
+	}
+	tempPath_t.push_back(v);
+	for (int j = 0; j < pre_t[v].size(); j++){
+		temp_t += T[pre_t[v][j]][v];
+		DFS_t(pre_t[v][j]);
+		temp_t -= T[pre_t[v][j]][v];
+	}
+	tempPath_t.pop_back();
+}
+
+bool cmp(vector<int> p1, vector<int> p2){
+	return p1[p1.size() - 1] < p2[p2.size() - 1];
+}
+int main()
+{
+	fill(D[0], D[0] + MAX*MAX, INF);
+	fill(T[0], T[0] + MAX*MAX, INF);
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < m; i++){
+		int n1, n2, way, d, t;
+		scanf("%d%d%d%d%d", &n1, &n2, &way, &d, &t);
+		if (way){
+			D[n1][n2] = d;
+			T[n1][n2] = t;
+		}
+		else{
+			D[n1][n2] = d;
+			T[n1][n2] = t;
+			D[n2][n1] = d;
+			T[n2][n1] = t;
+		}
+	}
+	scanf("%d%d", &s, &f);
+
+	Dijska_d(s);
+	Dijska_t(s);
+	min_d = INF;
+	temp_d = 0;
+	temp_t = 0;
+	DFS_d(f);
+	sort(Path_d.begin(), Path_d.end(), cmp);
+	min_t = INF;
+	temp_d = 0;
+	temp_t = 0;
+	DFS_t(f);
+	sort(Path_t.begin(), Path_t.end(), cmp);
+
+	vector <int> f_d;
+	vector <int> f_t;
+	for (int i = 0; i < Path_d[0].size() - 1; i++)
+		f_d.push_back(Path_d[0][i]);
+	for (int i = 0; i < Path_t[0].size() - 1; i++)
+		f_t.push_back(Path_t[0][i]);
+	if (f_t == f_d){
+		printf("Distance = %d; Time = %d: ", min_d, min_t);
+		for (int i = f_t.size() - 1; i >= 0; i--){
+			if (i == 0)
+				printf("%d\n", f_t[i]);
+			else
+				printf("%d -> ", f_t[i]);
+		}
+	}
+	else{
+		printf("Distance = %d: ", min_d);
+		for (int i = f_d.size() - 1; i >= 0; i--){
+			if (i == 0)
+				printf("%d\n", f_d[i]);
+			else
+				printf("%d -> ", f_d[i]);
+		}
+		printf("Time = %d: ", min_t);
+		for (int i = f_t.size() - 1; i >= 0; i--){
+			if (i == 0)
+				printf("%d\n", f_t[i]);
+			else
+				printf("%d -> ", f_t[i]);
+		}
+	}
+
+	system("pause");
+	return 0;
+}

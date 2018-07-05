@@ -1,0 +1,52 @@
+#pragma warning (disable:4996)
+#include <iostream>
+#define MAX 22
+
+using namespace std;
+
+long long nums[MAX];
+int n;
+
+int Getwei(long long num){
+	long long j = 10;
+	long long chu = num;
+	int wei = 0;
+	while (chu){
+		chu = chu / j;
+		wei++;
+	}
+	//printf("weishu:%d", wei);
+	return wei;
+}
+
+int main(){
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		long long num;
+		scanf("%lld", &num);
+		nums[i] = num;
+	}
+
+	for (int i = 0; i < n; i++){
+		int wei = Getwei(nums[i]);
+		int j = 1;
+		for (int k = 0; k < wei / 2; k++){
+			j = j * 10;
+		}
+		long long num1 = nums[i] % j;
+		long long num2 = nums[i] / j;
+		if (num1*num2<=0)
+			printf("No\n");
+		else{
+			int re = nums[i] % (num1*num2);
+			if (re)
+				printf("No\n");
+			else
+				printf("Yes\n");
+		}
+
+	}
+
+	system("pause");
+	return 0;
+}

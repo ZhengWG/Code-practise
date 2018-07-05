@@ -1,0 +1,52 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 100010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+vector<int> nums;
+int day;
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		int num;
+		scanf("%d", &num);
+		nums.push_back(num);
+	}
+	sort(nums.begin(), nums.end());
+	day = 0;
+	int max_day = 0;
+	for (int i = 0; i < nums.size(); i++){
+		day = nums.size() - i;
+		if (day <= max_day)
+			break;
+		while (nums[i] <= day){
+			day--;
+		}
+		if (max_day < day)
+			max_day = day;
+	}
+	if (nums.size()==1){
+		if (nums[0]>1)
+			printf("1");
+		else
+			printf("0");
+	}
+	else
+		printf("%d", max_day);
+
+	system("pause");
+	return 0;
+}

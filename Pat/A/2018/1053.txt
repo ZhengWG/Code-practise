@@ -1,0 +1,89 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 110
+#pragma warning (disable:4996)
+using namespace std;
+int m, n, s;
+bool vis[MAX] = { 0 };
+struct Node{
+	int w;
+	int v;
+	vector<int> childs;
+}nodes[MAX];
+
+
+vector <int> tempPath;
+vector<vector <int>> Path;
+int cnt = 0;
+void DFS(int root){
+	vis[root] = 1;
+	if (!nodes[root].childs.size()){
+		//叶结点
+		tempPath.push_back(nodes[root].w);
+		int sum = 0;
+		for (int k = 0; k < tempPath.size(); k++){
+			sum += tempPath[k];
+		}
+
+		if (sum == s){		
+			Path.push_back(tempPath);
+			cnt++;
+		}
+		tempPath.pop_back();
+		return;
+	}
+	tempPath.push_back(nodes[root].w);
+	for (int i = 0; i < nodes[root].childs.size(); i++){
+		if (!vis[nodes[root].childs[i]])
+			DFS(nodes[root].childs[i]);
+	}
+	tempPath.pop_back();
+}
+
+bool cmp(vector<int> a, vector<int> b){
+	for (int i = 0,j=0; i < a.size(), j < b.size(); i++,j++){
+		if (a[i] != b[j])
+			return a[i] > b[j];
+	}
+	return a[0] > b[0];
+}
+
+int main()
+{
+	scanf("%d%d%d", &n, &m, &s);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nodes[i].w);
+		nodes[i].v = i;
+	}
+	for (int i = 0; i < m; i++){
+		int order;
+		scanf("%d", &order);
+		int k;
+		scanf("%d", &k);
+		for (int j = 0; j < k; j++){
+			int lc;
+			scanf("%d", &lc);
+			nodes[order].childs.push_back(lc);
+		}
+	}
+	DFS(0);
+	sort(Path.begin(), Path.end(), cmp);
+	for (int i = 0; i < cnt; i++){
+		for (int j = 0; j < Path[i].size()-1; j++){
+			printf("%d ", Path[i][j]);
+		}
+		printf("%d\n", Path[i][Path[i].size() - 1]);
+	}
+
+	system("pause");
+	return 0;
+}

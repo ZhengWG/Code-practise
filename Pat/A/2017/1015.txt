@@ -1,0 +1,56 @@
+#include <iostream>
+#include <math.h>
+#include <vector>
+//P213 《算法笔记》
+
+using namespace std;
+int num[200];
+
+bool JudgePrime(int num){
+
+	if (num <= 1)
+		return false;
+
+	int num_s = sqrt(1.00*num);
+	int result = 1;
+	for (int i = 2; i <= num_s; i++){
+		result = num % i;
+		if (!result)
+			break;
+	}
+	if (!result)
+		return false;
+	else
+		return true;
+}
+
+int main(){
+	int n, m;
+	while (1){
+		scanf("%d", &n);
+		if (n < 0)
+			break;
+		scanf("%d", &m);
+		if (!JudgePrime(n))
+			printf("No\n");
+		else{
+			int order = 0;
+			while (n){//进制转化
+				num[order] = n % m;
+				n = n / m;
+				order++;
+			}
+
+			for (int i = 0; i < order; i++){
+				n = n * m + num[i];
+			}
+			if (!JudgePrime(n))
+				printf("No\n");
+			else
+				printf("Yes\n");
+		}
+
+	}
+	system("pause");
+	return 0;
+}

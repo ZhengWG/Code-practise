@@ -1,0 +1,46 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 40001
+#define MAX_K 2502
+#pragma warning (disable:4996)
+using namespace std;
+int n, k;
+string names[MAX];
+vector<int> cors[MAX_K];
+
+int main()
+{	
+	scanf("%d%d", &n, &k);
+	for (int i = 0; i < n; i++){
+		int m;
+		cin >> names[i] >> m;
+		for (int j = 0; j < m; j++){
+			int co;
+			scanf("%d", &co);
+			cors[co].push_back(i);
+		}
+	}
+
+	for (int i = 1; i < k+1; i++){
+		printf("%d %d\n", i, cors[i].size());
+		vector<string> stus;
+		for (int j = 0; j < cors[i].size(); j++){
+			stus.push_back(names[cors[i][j]]);
+		}
+		sort(stus.begin(), stus.end());
+		for (int q = 0; q < stus.size(); q++){
+			printf("%s\n", stus[q].c_str());
+		}
+	}
+
+	system("pause");
+	return 0;
+}

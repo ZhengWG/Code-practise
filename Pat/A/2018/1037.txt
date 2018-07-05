@@ -1,0 +1,60 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#define MAX 100010
+#pragma warning(disable:4996)
+using namespace std;
+int nc, np;
+vector<long long> nums[4];
+
+bool cmp(long long a, long long b){
+	return a > b;
+}
+
+int main()
+{	
+	scanf("%d", &nc);
+	for (int i = 0; i < nc; i++){
+		long long a;
+		scanf("%lld",&a);
+		if (a >= 0)
+			nums[0].push_back(a);
+		else
+			nums[1].push_back(a);
+	}
+	scanf("%d", &np);
+	for (int i = 0; i < np; i++){
+		long long a;
+		scanf("%lld", &a);
+		if (a >= 0)
+			nums[2].push_back(a);
+		else
+			nums[3].push_back(a);
+	}
+
+	sort(nums[0].begin(), nums[0].end(),cmp);
+	sort(nums[1].begin(), nums[1].end());
+	sort(nums[2].begin(), nums[2].end(), cmp);
+	sort(nums[3].begin(), nums[3].end());
+
+	int po = 0;
+	long long num = 0;
+	while (po < nums[0].size() && po < nums[2].size()){
+		num = num + nums[0][po] * nums[2][po];
+		po++;
+	}
+
+	po = 0;
+	while (po < nums[1].size() && po < nums[3].size()){
+		num = num + nums[1][po] * nums[3][po];
+		po++;
+	}
+
+	printf("%lld", num);
+	system("pause");
+	return 0;
+}

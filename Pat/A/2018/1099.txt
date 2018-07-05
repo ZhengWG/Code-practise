@@ -1,0 +1,78 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <queue>
+#define MAX 110
+#define MAX_SC 101
+#pragma warning(disable:4996)
+using namespace std;
+int n;
+vector<int> datas;
+struct Node{
+	int data;
+	int lchild;
+	int rchild;
+}nodes[MAX];
+
+void Inorder(int root){
+	if (root == -1)
+		return;
+	Inorder(nodes[root].lchild);
+	if (datas.size()){
+		int data = datas[datas.size()-1];
+		nodes[root].data = data;
+		datas.pop_back();
+	}
+	Inorder(nodes[root].rchild);
+}
+
+bool flag = false;
+void BFS(int root){
+	queue<Node> qu;
+	qu.push(nodes[root]);
+	while (!qu.empty()){
+		Node node = qu.front();
+		if (!flag){
+			printf("%d", node.data);
+			flag = true;
+		}
+		else
+			printf(" %d", node.data);
+		qu.pop();
+		if (node.lchild != -1){
+			qu.push(nodes[node.lchild]);
+		}
+		if (node.rchild != -1){
+			qu.push(nodes[node.rchild]);
+		}
+	}
+}
+
+bool cmp(int a, int b){
+	return a > b;
+}
+
+int main()
+{	
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		int l, r;
+		scanf("%d%d", &nodes[i].lchild, &nodes[i].rchild);
+	}
+	for (int i = 0; i < n; i++){
+		int data;
+		scanf("%d", &data);
+		datas.push_back(data);
+	}
+	sort(datas.begin(), datas.end(), cmp);
+	Inorder(0);
+	BFS(0);
+
+	system("pause");
+	return 0;
+}

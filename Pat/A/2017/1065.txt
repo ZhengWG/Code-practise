@@ -1,0 +1,33 @@
+#include <iostream>
+//P22 《算法笔记》 long long int：取值范围：【-9223372036854775808，9223372036854775807】
+
+using namespace std;
+
+int main(){
+	long long int P_MAX = 9223372036854775807;
+	long long int N_MAX = -9223372036854775808;
+	int case_num;
+	scanf("%d", &case_num);
+	for (int i = 1; i <= case_num; i++){
+		long long int num1, num2, sum;
+		scanf("%lld%lld%lld", &num1, &num2, &sum);
+		if (num1 > 0){
+			if (P_MAX - num1 < num2)
+				printf("Case #%d: true\n", i);
+			else if (num1 + num2 > sum)
+				printf("Case #%d: true\n", i);
+			else
+				printf("Case #%d: false\n", i);
+		}
+		else{
+			if (N_MAX - num1 > num2)
+				printf("Case #%d: false\n", i);
+			else if (num1 + num2 > sum)
+				printf("Case #%d: true\n", i);
+			else
+				printf("Case #%d: false\n", i);
+		}
+	}
+	system("pause");
+}
+

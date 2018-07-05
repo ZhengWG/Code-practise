@@ -1,0 +1,60 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 22
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+struct Node{
+	string val;
+	int fa;
+	int lchild;
+	int rchild;
+}nodes[MAX];
+int root;
+string In(int v){
+	if (v == root){
+		return In(nodes[v].lchild) + nodes[v].val + In(nodes[v].rchild);
+	}
+	else if (v == -1){
+		return "";
+	}
+	else if (nodes[v].rchild == -1){
+		return nodes[v].val;
+	}
+	else{
+		return "(" + In(nodes[v].lchild) + nodes[v].val + In(nodes[v].rchild) + ")";
+	}
+	return nodes[v].val;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		cin >> nodes[i+1].val;
+		scanf("%d%d", &nodes[i + 1].lchild, &nodes[i + 1].rchild);
+		if (nodes[i + 1].lchild != -1)
+			nodes[nodes[i + 1].lchild].fa = i + 1;
+		if (nodes[i + 1].rchild != -1)
+			nodes[nodes[i + 1].rchild].fa = i + 1;
+	}
+	for (root = 1; root <= n; root++){
+		if (!nodes[root].fa)
+			break;
+	}
+	string out = In(root);
+	printf("%s", out.c_str());
+
+	system("pause");
+	return 0;
+}

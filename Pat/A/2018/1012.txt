@@ -1,0 +1,83 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>  
+#include <algorithm>
+#include <map>
+#pragma warning(disable:4996)
+#define MAX 2001
+using namespace std;
+int tag;
+int n, m;
+
+struct Stu
+{
+	string id;
+	int subs[4];
+	int ranks[4];
+}stus[MAX];
+
+int cmp(Stu stu1, Stu stu2){
+		return stu1.subs[tag] > stu2.subs[tag];
+}
+
+void Sort_stu(int flag){
+	tag = flag;
+	sort(stus, stus + n, cmp);
+	for (int i = 0; i < n; i++){
+		if (i>0 && stus[i].subs[tag] == stus[i - 1].subs[tag])
+			stus[i].ranks[tag] = stus[i - 1].ranks[tag];
+		else
+			stus[i].ranks[tag] = i + 1;
+	}
+}
+
+void Print(Stu stu){
+	char word = 'A';
+	int best = stu.ranks[3];
+	if (stu.ranks[0] < best){
+		word = 'C';
+		best = stu.ranks[0];
+	}
+	if (stu.ranks[1] < best){
+		word = 'M';
+		best = stu.ranks[1];
+	}
+	if (stu.ranks[2] < best){
+		word = 'E';
+		best = stu.ranks[2];
+	}
+	printf("%d %c\n", best, word);
+}
+
+int main()
+{
+	scanf("%d%d", &n, &m);
+	for (int i = 0; i < n; i++){
+		char id_temp[7];
+		scanf("%s%d%d%d", id_temp, &stus[i].subs[0], &stus[i].subs[1], &stus[i].subs[2]);
+		stus[i].subs[3] = (stus[i].subs[0] + stus[i].subs[1] + stus[i].subs[2]) / 3;
+		stus[i].id = id_temp;
+	}
+	Sort_stu(0);
+	Sort_stu(1);
+	Sort_stu(2);
+	Sort_stu(3);
+	map <string, int> match;
+	for (int i = 0; i < n; i++){
+		match[stus[i].id] = i+1;
+	}
+
+	for (int i = 0; i < m; i++){
+		char id_se[7];
+		scanf("%s", id_se);
+		string name = id_se;
+		if (match[name])
+			Print(stus[match[name]-1]);
+		else
+			printf("N/A\n");
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,109 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 110
+#pragma warning (disable:4996)
+using namespace std;
+
+int nums[MAX], n;
+int out[MAX];
+int tmp[MAX];
+int temp[MAX];
+
+void downad(int low, int high){
+	int i = low;
+	int j = i * 2;
+	while (j <= high){
+		if (j + 1 <= high && temp[j + 1] > temp[j]){
+			j = j + 1;
+		}
+		if (temp[j] > temp[i]){
+			swap(temp[i], temp[j]);
+			i = j;
+			j = i * 2;
+		}
+		else
+			break;
+	}
+}
+
+void CreateHeap(){
+	for (int i = n/2; i >= 1; i--){
+		downad(i, n);
+	}
+}
+
+bool Judge(int a[], int b[]){
+	for (int i = 0; i < n; i++){
+		if (a[i + 1] != b[i + 1])
+			return false;
+	}
+	return true;
+}
+
+void Print(int a[]){
+	for (int i = 0; i < n; i++){
+		if (i == n-1)
+			printf("%d\n", a[i+1]);
+		else
+			printf("%d ", a[i+1]);
+	}
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nums[i + 1]);
+	}
+	for (int i = 0; i < n; i++){
+		scanf("%d", &out[i + 1]);
+	}
+	for (int i = 0; i < n; i++){
+		tmp[i + 1] = nums[i + 1];
+		temp[i + 1] = nums[i + 1];
+	}
+
+	bool flag = false;
+	for (int i = 1; i < n; i++){
+		int j = i;
+		while (j > 0 && tmp[j] > tmp[j + 1]){
+			swap(tmp[j], tmp[j + 1]);
+			j--;
+		}
+		if (flag){
+			printf("Insertion Sort\n");
+			Print(tmp);
+			break;
+		}
+		if (Judge(tmp, out)){
+			flag = true;
+		}
+	}
+	if (!flag){
+		CreateHeap();
+		for (int i = n; i >= 1; i--){
+			swap(temp[i],temp[1]);
+			downad(1, i - 1);
+			if (flag){
+				printf("Heap Sort\n");
+				Print(temp);
+				break;
+			}
+			if (Judge(temp, out)){
+				flag = true;
+			}
+		}
+	}
+
+	system("pause");
+	return 0;
+}

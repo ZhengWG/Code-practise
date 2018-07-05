@@ -1,0 +1,64 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#pragma warning (disable:4996)
+using namespace std;
+int m, n, k;
+
+bool Judge(vector<int> nums){
+	stack<int> test;
+	int cnt = 2;
+	test.push(1);
+	int wei = 0;
+	while (test.size() <= m){
+		if (wei == nums.size())
+			return true;
+		if (cnt > n+1)
+			break;
+		if (test.size()){
+			if (test.top() == nums[wei]){
+				wei++;
+				test.pop();
+			}
+			else{
+				test.push(cnt);
+				cnt++;
+			}
+		}
+		else{
+			test.push(cnt);
+			cnt++;
+		}
+	}
+	return false;
+}
+
+int main()
+{	
+	scanf("%d%d%d", &m, &n, &k);
+	vector<int> nums;
+	for (int i = 0; i < k; i++){
+		for (int j = 0; j < n; j++){
+			int a;
+			scanf("%d", &a);
+			nums.push_back(a);
+		}
+		if (Judge(nums))
+			printf("YES\n");
+		else
+			printf("NO\n");
+		nums.clear();
+	}
+
+	system("pause");
+	return 0;
+}

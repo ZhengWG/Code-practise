@@ -1,0 +1,41 @@
+#include <iostream>
+//book: P269 《算法笔记》
+
+using namespace std;
+
+const int max_add =1000000;
+struct Node{
+	bool list;
+	int link;
+}node[max_add];
+//两个元素即可，字符量也不需要，list表示哪个链表，link指向下一个链表
+
+int main()
+{
+
+	int add1, add2, n;
+	scanf("%d%d%d", &add1, &add2, &n);
+	for (int i = 0; i < n; i++){
+		int add_own, add_nex;
+		char data;
+		scanf("%d %c %d", &add_own, &data, &add_nex);
+		node[add_own].link = add_nex;
+	}
+
+	int add;
+	for (add = add1; add != -1; add = node[add].link)
+		node[add].list = 1;//第一条链表
+	for (add = add2; add != -1; add = node[add].link)
+		if (node[add].list == 1)
+			break;//有元素属于第一条链表
+
+	if (add != -1)
+		printf("%05d\n", add);
+	else
+		printf("-1\n");
+	system("pause");
+	return 0;
+
+
+}
+

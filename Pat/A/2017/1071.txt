@@ -1,0 +1,58 @@
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+#include <algorithm>
+//map 自带红黑查找树
+//注意string字符串的构造
+
+using namespace std;
+
+bool Judge(char &word){
+	if (word >= 'a' && word <= 'z')
+		return true;
+	else if (word >= 'A' && word <= 'Z'){
+		word = word - 'A' + 'a';
+		return true;
+	}
+	else if (word >= '0' && word <= '9')
+		return true;
+	return false;
+}
+
+vector<char> wordlist;
+map<string, int> mp;
+int main(){
+	char temp;
+	while (1){
+		temp = getchar();
+		if (Judge(temp)){
+			wordlist.push_back(temp);
+		}
+		else{
+			if (wordlist.size()){
+				string name(wordlist.begin(), wordlist.end());
+				mp[name]++;
+				wordlist.clear();
+			}
+			if (temp == '\n')
+				break;
+			
+		}
+	}
+
+	int maxi = 0;
+	string final_name;
+	for (map<string, int>::iterator it = mp.begin(); it != mp.end(); it++){
+		if (it->second > maxi){
+			maxi = it->second;
+			final_name = it->first;
+		}
+	}
+
+	printf("%s ", final_name.c_str());
+	printf("%d", maxi);
+
+	system("pause");
+	return 0;
+}

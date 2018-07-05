@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+#define MAX 20
+using namespace std;
+
+vector<string> name;
+vector<string> pass;
+
+int n;
+
+bool Modify(char* pass){
+	int i;
+	bool flag = false;
+	for (i = 0; i < MAX; i++){
+		if (pass[i] == '0'){
+			pass[i] = '%';
+			flag = true;
+		}
+			
+		else if (pass[i] == '1'){
+			pass[i] = '@';
+			flag = true;
+		}
+		else if (pass[i] == 'l'){
+			pass[i] = 'L';
+			flag = true;
+		}
+		else if (pass[i] == 'O'){
+			pass[i] = 'o';
+			flag = true;
+		}
+	}
+	return flag;
+}
+
+int main(){
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++){
+		char name1[MAX];
+		char pass1[MAX];
+
+		scanf("%s", name1);
+		scanf("%s", pass1);
+		if (Modify(pass1)){
+			name.push_back(name1);
+			pass.push_back(pass1);
+		}
+			
+	}
+
+	if (name.size()>0){
+		printf("%d\n", name.size());
+		for (int i = 0; i < name.size(); i++){
+			printf("%s ", name[i].c_str());
+			printf("%s\n", pass[i].c_str());
+		}
+	}
+	else if (n <= 1)
+		printf("There is %d account and no account is modified", n);
+	else
+		printf("There are %d accounts and no account is modified", n);
+
+	system("pause");
+	return 0;
+}

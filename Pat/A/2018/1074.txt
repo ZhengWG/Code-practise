@@ -1,0 +1,66 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <map>
+#define MAX 100010
+#pragma warning(disable:4996)
+using namespace std;
+int n, k;
+int firstadd;
+map<int, int> match;
+
+struct Node{
+	int value;
+	int nextadd;
+}nodes[MAX];
+
+int main()
+{	
+	scanf("%d%d%d", &firstadd, &n, &k);
+	for (int i = 0; i < n; i++){
+		int add;
+		scanf("%d", &add);
+		scanf("%d%d",  &nodes[add].value, &nodes[add].nextadd);
+		match.insert(pair<int, int>(nodes[add].value, add));
+	}
+	vector<int> values;
+	Node node_now = nodes[firstadd];
+	while (node_now.nextadd != -1){
+		values.push_back(node_now.value);
+		node_now = nodes[node_now.nextadd];
+	}
+	values.push_back(node_now.value);
+
+	vector<int> re_values;
+	int n_max = values.size();
+	int a = k;
+	while (a <= n_max){
+		for (int i = a-1; i >= a-k; i--){
+			re_values.push_back(values[i]);
+		}
+		a += k;
+	}
+	a -= k;
+	for (int i = a; i < n_max; i++){
+		re_values.push_back(values[i]);
+	}
+
+	int size = re_values.size();
+	if (size == 1){
+		printf("%05d %d -1", match.find(re_values[0])->second, re_values[0]);
+	}
+	else{
+		for (int i = 0; i < size - 1; i++){
+			printf("%05d %d %05d\n", match.find(re_values[i])->second, re_values[i], match.find(re_values[i + 1])->second);
+		}
+		printf("%05d %d -1\n", match.find(re_values[size-1])->second, re_values[size-1]);
+	}
+
+
+	system("pause");
+	return 0;
+}

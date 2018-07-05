@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <set>
+#include <string.h>
+//算法笔记：P343，重点在于传递深度height以及深度的算法（先找一个集合，再找一个集合），这里也用了set能够避免重复插入，能够自动排序
+
+#define MAX_VER 10010
+using namespace std;
+
+vector<int> ver[MAX_VER];//定义顶点
+int n;//总数
+bool vis[MAX_VER];
+
+set<int> ver_tmp;//第一次遍历得到的集合
+set<int> ver_final;//最终的集合
+int maxH = 0;
+
+void DFS(int i)
+{
+	vis[i] = true;
+	for (vector<int>::iterator it = ver[i].begin(); it != ver[i].end(); it++){
+		if (vis[*it] == false)
+			DFS(*it);
+	}
+	return;
+}
+
+void GetHei(int i, int height)
+{
+	if (height > maxH){
+		ver_tmp.clear();
+		ver_tmp.insert(i);
+		maxH = height;
+	}
+	else if (height == maxH)
+		ver_tmp.insert(i);
+
+	vis[i] = true;
+	for (vector<int>::iterator it = ver[i].begin(); it != ver[i].end(); it++){
+		if (vis[*it] == false){
+			GetHei(*it, height+1);//往下搜索
+		}
+	}
+	return;
+}
+
+
+int main(){
+	scanf("%d", &n);
+
+	for (int i = 1; i < n; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		ver[a].push_back(b);
+		ver[b].push_back(a);
+	}
+
+	memset(vis, 0, sizeof(vis));//初始化vis矩阵
+	int block = 0;//连通域
+
+	for (int i = 1; i < n+1; i++)
+	{
+		if (!vis[i]){
+			DFS(i);
+			block++;
+		}
+	}
+	if (block > 1)
+		printf("Error: %d components", block);
+	else
+	{
+		memset(vis, 0, sizeof(vis));//初始化vis矩阵
+		//先随便找一个最深的结点
+		GetHei(1, 1);//得到第一个set集合
+
+		ver_final = ver_tmp;
+		memset(vis, 0, sizeof(vis));//初始化vis矩阵
+		GetHei(*ver_tmp.begin(), 1);//从集合ver中任选一个
+		for (set<int>::iterator it = ver_tmp.begin(); it != ver_tmp.end(); it++)
+			ver_final.insert(*it);
+		for (set<int>::iterator it = ver_final.begin(); it != ver_final.end(); it++)
+			printf("%d\n", *it);
+	}
+	system("pause");
+	return 0;
+
+}

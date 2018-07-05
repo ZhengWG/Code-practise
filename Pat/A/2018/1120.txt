@@ -1,0 +1,49 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+
+int GetSum(int num){
+	int sum = 0;
+	int k = num;
+	while (k){
+		sum += k % 10;
+		k /= 10;
+	}
+	return sum;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	set<int> out;
+	for (int i = 0; i < n; i++){
+		int in;
+		scanf("%d", &in);
+		out.insert(GetSum(in));
+	}
+	printf("%d\n", out.size());
+	set<int>::iterator it = out.begin();
+	for (int i = 0; i < out.size(); i++){
+		if (i == out.size() - 1)
+			printf("%d\n", *it);
+		else
+			printf("%d ", *it);
+		it++;
+	}
+
+	system("pause");
+	return 0;
+}

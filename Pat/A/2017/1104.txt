@@ -1,0 +1,24 @@
+#include <iostream>
+#pragma warning(disable:4996)
+#define MAX 100010
+using namespace std;
+
+int n;
+double nums[MAX];
+int main(){
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		double num;
+		scanf("%lf", &num);
+		nums[i] = num;
+	}
+
+	double sum = 0;
+	for (int i = 0; i < n; i++){
+		sum += nums[i] * (n-i)*(i + 1.000000);
+	}
+
+	printf("%.2lf", sum);
+	system("pause");
+	return 0;
+}

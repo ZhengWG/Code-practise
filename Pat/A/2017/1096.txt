@@ -1,0 +1,51 @@
+#include <iostream>
+#include <vector>
+#include <math.h>
+#include <set>
+
+using namespace std;
+
+long long n;
+set<long> num;//约数
+set<long> final_num;
+
+int main(){
+	scanf("%lld", &n);
+
+	for (long i = 2; i <= sqrt(n); i++){
+		if (n%i == 0)
+			num.insert(i);
+	}
+
+	int maxi = 0;
+	long temp_num = 0;
+	for (set<long>::iterator it = num.begin(); it != num.end(); it++){
+		int temp_max = 0;
+		long long temp_n = n;
+		while (temp_n % (*it + temp_max) == 0){
+			temp_n = temp_n / (*it + temp_max);
+			temp_max++;
+		}//这里很关键，不单单只要整除，还需要缩小n
+			
+		if (temp_max > maxi){
+			maxi = temp_max;
+			temp_num = *it;
+		}
+	}
+
+	if (temp_num){
+		printf("%d\n", maxi);
+		for (int i = 0; i < maxi-1; i++){
+			printf("%ld*", temp_num + i);
+		}
+		printf("%ld", temp_num + maxi - 1);
+	}
+	else{
+		printf("1\n");
+		printf("%lld", n);
+	}
+
+
+	system("pause");
+	return 0;
+}

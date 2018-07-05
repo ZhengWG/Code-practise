@@ -1,0 +1,83 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n, k, m;
+int birds[MAX];
+bool vis[MAX];
+
+int Findfather(int a){
+	if (birds[a] == a)
+		return a;
+	else{
+		int F = Findfather(birds[a]);
+		birds[a] = F;
+		return F;
+	}
+}
+
+void Union(int a, int b){
+	int Fa = Findfather(a);
+	int Fb = Findfather(b);
+	if (Fa != Fb)
+		birds[Fa] = Fb;
+	return;
+}
+
+int main()
+{
+	for (int i = 0; i < MAX; i++){
+		birds[i] = i;
+	}
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &k);
+		if (k){
+			int b;
+			scanf("%d", &b);
+			vis[b] = 1;
+			birds[b] = Findfather(b);
+			for (int j = 1; j < k; j++){
+				int num;
+				scanf("%d", &num);
+				vis[num] = 1;
+				Union(num, b);
+			}
+		}
+	}
+	int num_tree = 0;
+	int num_bird = 0;
+	for (int i = 0; i < MAX; i++){
+		if (vis[i])
+			num_bird++;
+		if (birds[i] == i && vis[i])
+			num_tree++;
+	}
+	printf("%d %d\n", num_tree, num_bird);
+	int m;
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++){
+		int a, b;
+		scanf("%d%d", &a, &b);
+		int Fa = Findfather(a);
+		int Fb = Findfather(b);
+		if (Fa == Fb)
+			printf("Yes\n");
+		else
+			printf("No\n");
+	}
+
+	system("pause");
+	return 0;
+}

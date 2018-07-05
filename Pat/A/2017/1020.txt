@@ -1,0 +1,76 @@
+cpp : 定义控制台应用程序的入口点。
+//book: P288 《算法笔记》
+#include <iostream>
+#include <queue>
+
+#define MAX_NODE 31
+
+using namespace std;
+int postorder[MAX_NODE];
+int inorder[MAX_NODE];
+
+int n;
+
+struct BTree{
+	int data;
+	BTree *left;
+	BTree *right;
+};
+typedef struct BTree* Node;
+
+Node CreateNode(int PosL, int PosR, int InL, int InR){
+	if (PosL > PosR){
+		return NULL;
+	}
+	Node root_node = new struct BTree;
+	root_node->data = postorder[PosR];
+	int i;//表示根结点在中序遍历中的位置
+	for (i = InL; i < InR+1; i++)
+		if (inorder[i] == root_node->data)
+			break;
+	int num_left = i - InL;
+	root_node->left = CreateNode(PosL, PosL + num_left - 1, InL, i - 1);
+	root_node->right = CreateNode(PosL + num_left, PosR-1, i + 1, InR);
+
+	return root_node;
+}
+
+//层序遍历
+void BFS(Node root){
+	queue<Node> que;
+	que.push(root);
+	int num = 1;
+	while (!que.empty()){
+		Node node = que.front();
+		que.pop();
+		printf("%d", node->data);
+		if (num != n)
+			printf(" ");
+		if (node->left != NULL) que.push(node->left);
+		if (node->right != NULL) que.push(node->right);
+		num++;
+	}
+
+}
+
+int main()
+{
+	scanf("%d", &n);
+
+	for (int i = 0; i < n; i++){
+		int input_node;
+		scanf("%d", &input_node);
+		postorder[i] = input_node;
+	}
+
+	for (int i = 0; i < n; i++){
+		int input_node;
+		scanf("%d", &input_node);
+		inorder[i] = input_node;
+	}
+	Node root  = CreateNode(0, n - 1, 0, n - 1);
+	BFS(root);
+	system("pause");
+	return 0;
+
+}

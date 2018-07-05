@@ -1,0 +1,62 @@
+// Test.cpp : 定义控制台应用程序的入口点。
+//book: P233 《算法笔记》
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+const int num_ids = 26 * 26 * 26 * 10 + 1;
+vector<int> list[num_ids];
+
+//将姓名转化为数字ID，能够避免查找所引起的超时问题
+int GetID(char namelist[]){
+	int id = 0;
+	for (int i = 0; i < 3; i++){
+		id = id * 26 + namelist[i] - 'A';
+	}
+	id = id * 10 + namelist[3] - '0';
+	return id;
+}
+
+
+
+int main()
+{
+	int N, K;
+	scanf("%d%d", &N, &K);
+
+
+	for (int i = 0; i < K; i++){
+		int k, n;
+		scanf("%d%d", &k, &n);
+
+		for (int j = 0; j < n; j++){//读入名字
+			char str[5];
+			scanf("%s", str);
+			int stu_id;		
+			stu_id = GetID(str);
+			list[stu_id].push_back(k);
+		}	
+	}
+
+	//输出
+	for (int i = 0; i < N; i++){
+		char str[5];
+		scanf("%s", str);
+		int stu_id = GetID(str);
+		printf("%s", str);
+		printf(" %d", list[stu_id].size());
+		sort(list[stu_id].begin(),list[stu_id].end());
+		vector<int>::iterator it = list[stu_id].begin();
+		while (it != list[stu_id].end()){
+			printf(" %d", *it++);
+		}
+		printf("\n");
+
+	}
+	system("pause");
+	return 0;
+}
+
+

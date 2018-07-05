@@ -1,0 +1,77 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//减枝
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 100010
+#define INF 10000000002
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+double p, r;
+struct Node{
+	int num;
+	vector <int> childs;
+}nodes[MAX];
+
+int layers = 0;
+int max_layer = INF;
+double price = INF;
+int cnt = 0;
+bool vis[MAX] = { 0 };
+void DFS(int root){
+	if (!nodes[root].num && !vis[root]){
+		if (layers < max_layer)
+			max_layer = layers;
+		else if (layers == max_layer){
+			cnt++;
+			return;
+		}
+		else
+			return;
+		double p_temp = p;
+		for (int i = 0; i < layers; i++){
+			p_temp *= (1 + r / 100.0000);
+		}
+		if (p_temp < price){
+			cnt = 1;
+			price = p_temp;
+		}
+		else if (p_temp == price)
+			cnt++;
+		return;
+	}
+	vis[root] = 1;
+	for (int i = 0; i < nodes[root].num; i++){
+		if (!vis[nodes[root].childs[i]]){
+			layers++;
+			if (layers <= max_layer)
+				DFS(nodes[root].childs[i]);
+			layers--;
+		}
+	}
+}
+
+int main()
+{
+	scanf("%d%lf%lf", &n, &p, &r);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &nodes[i].num);
+		for (int j = 0; j < nodes[i].num; j++){
+			int cl;
+			scanf("%d", &cl);
+			nodes[i].childs.push_back(cl);
+		}
+	}
+	DFS(0);
+	printf("%.4lf %d", price, cnt);
+
+	system("pause");
+	return 0;
+}

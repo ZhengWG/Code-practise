@@ -1,0 +1,45 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include<iostream>  
+#pragma warning(disable:4996)
+#define MAX 4
+using namespace std;
+float team1[MAX];
+float team2[MAX];
+float team3[MAX];
+char words[3] = {'W','T','L'};
+int nums[3];
+
+int Getmax(float* team){
+	float max = -1;
+	int num = -1;
+	for (int i = 0; i < 3; i++){
+		if (team[i]>max){
+			max = team[i];
+			num = i;
+		}
+	}
+	return num;
+}
+
+int main()
+{
+	for (int i = 0; i < 3; i++){
+		scanf("%f", &team1[i]);
+	}
+	for (int i = 0; i < 3; i++){
+		scanf("%f", &team2[i]);
+	}
+	for (int i = 0; i < 3; i++){
+		scanf("%f", &team3[i]);
+	}
+	nums[0] = Getmax(team1);
+	nums[1] = Getmax(team2);
+	nums[2] = Getmax(team3);
+	float out = (team1[nums[0]] * team2[nums[1]] * team3[nums[2]]*0.650 - 1)*2.000;
+	printf("%c %c %c %.2f", words[nums[0]], words[nums[1]], words[nums[2]], out);
+
+	system("pause");
+	return 0;
+}

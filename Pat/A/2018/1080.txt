@@ -1,0 +1,112 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#include <map>
+#define MAX_ST 40010
+#define MAX_SC 101
+#pragma warning(disable:4996)
+using namespace std;
+int n, m, k;
+
+struct STU{
+	int num;
+	int ge;
+	int gi;
+	int ga;
+	int rank;
+	int pres[10];
+}stus[MAX_ST];
+
+struct SCH{
+	int quota;
+	vector<STU> stus;
+}schools[MAX_SC];
+
+bool cmp(STU stu1, STU stu2){
+	if (stu1.ga == stu2.ga)
+		return stu1.ge > stu2.ge;
+	return stu1.ga > stu2.ga;
+}
+
+bool cmp1(STU stu1, STU stu2){
+	return stu1.num < stu2.num;
+}
+
+int main()
+{	
+	scanf("%d%d%d", &n, &m, &k);
+	for (int i = 0; i < m; i++){
+		scanf("%d", &schools[i].quota);
+	}
+
+	for (int i = 0; i < n; i++){
+		scanf("%d%d", &stus[i].ge, &stus[i].gi, &stus[i].pres[0]);
+		for (int j = 0; j < k; j++)
+			scanf("%d", &stus[i].pres[j]);
+		stus[i].ga = (stus[i].ge + stus[i].gi) / 2;
+		stus[i].num = i;
+	}
+
+	sort(stus, stus + n, cmp);
+	stus[0].rank = 1;
+	for (int i = 1; i < n; i++){
+		if (stus[i].ga == stus[i - 1].ga && stus[i].ge == stus[i - 1].ge)
+			stus[i].rank = stus[i - 1].rank;
+		else
+			stus[i].rank = i + 1;
+	}
+
+	vector<int> s;
+	for (int i = 0; i < n; i++){
+		s.push_back(i);
+		int next = i + 1;
+		while (next < n){
+			if (stus[next].rank == stus[next-1].rank){
+				s.push_back(next);
+				next++;
+			}
+			else
+				break;
+		}
+		i = next - 1;
+
+		for (int j = 0; j < s.size(); j++){
+			for (int q = 0; q < k; q++){
+				int pre_s = stus[s[j]].pres[q];
+				if (schools[pre_s].quota > 0){
+					schools[pre_s].stus.push_back(stus[s[j]]);
+					schools[pre_s].quota--;
+					break;
+				}
+				else{
+					if (schools[pre_s].stus[schools[pre_s].stus.size() - 1].rank == stus[s[j]].rank){
+						schools[pre_s].stus.push_back(stus[s[j]]);
+						break;
+					}
+				}
+			}
+		}
+		s.clear();
+	}
+
+	for (int i = 0; i < m; i++){
+		if (schools[i].stus.size() == 0){
+			printf("\n");
+		}
+		else{
+			sort(schools[i].stus.begin(), schools[i].stus.end(),cmp1);
+			printf("%d", schools[i].stus[0].num);
+			for (int j = 1; j < schools[i].stus.size(); j++){
+				printf(" %d", schools[i].stus[j].num);
+			}
+			printf("\n");
+		}
+	}
+
+	system("pause");
+	return 0;
+}

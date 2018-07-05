@@ -1,0 +1,60 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 10000
+#pragma warning (disable:4996)
+using namespace std;
+char fu1;
+string word;
+char tou;
+
+int main()
+{	
+	scanf("%c%c.", &fu1, &tou);
+	cin >> word;
+	int idx = word.find("E");
+	string wei = word.substr(0, idx);
+	string zh = word.substr(idx + 1, word.size());
+	int zhi = atof(zh.c_str());
+
+	if (fu1 == '-')
+		printf("-");
+
+	if (zhi < 0){
+		zhi = abs(zhi);
+		printf("0.");
+		for (int i = 1; i < zhi; i++){
+			printf("0");
+		}
+		printf("%c", tou);
+		printf("%s", wei.c_str());
+	}
+	else{
+		int len = wei.size();
+		if (zhi >= len){
+			printf("%c", tou);
+			printf("%s", wei.c_str());
+			for (int i = 0; i < zhi - len; i++){
+				printf("0");
+			}
+		}
+		else{
+			printf("%c", tou);
+			for (int i = 0; i < len; i++){
+				if (i == zhi)
+					printf(".");
+				printf("%c", wei[i]);
+			}
+		}
+	}
+
+	system("pause");
+	return 0;
+}

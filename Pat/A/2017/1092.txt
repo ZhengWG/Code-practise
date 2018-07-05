@@ -1,0 +1,54 @@
+#include <iostream>
+#include <string.h>
+#define MAX 70
+using namespace std;
+
+int words[MAX];
+
+int hashing(char word){
+	if ('0' <= word <= '9')
+		return word - '0';
+	else if ('a' <= word <= 'z')
+		return word - 'a' + 10;
+	else if ('A' <= word <= 'Z')
+		return word - 'A' + 36;
+	else
+		return -1;
+}
+
+int main(){
+	memset(words, 0, sizeof(words));
+	char temp;
+	int num_shop = 0;
+	while ((temp = getchar()) != '\n' && temp != EOF){
+		num_shop++;
+		int num = hashing(temp);
+		words[num]++;
+	}
+
+	int num_eva = 0;
+	int num_misiing = 0;
+	while ((temp = getchar()) != '\n' && temp != EOF){
+		num_eva++;
+		int num = hashing(temp);
+		if (words[num]){
+			words[num]--;
+		}
+		else{
+			num_misiing++;
+		}
+	}
+	if (!num_misiing){
+		int num_extra = num_shop - num_eva;
+		if (num_extra >= 0)
+			printf("Yes %d", num_extra);
+		else
+			printf("Yes 0");
+	}
+	else{
+		printf("No %d", num_misiing);
+	}
+
+	system("pause");
+	return 0;
+}

@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+//book: P18 《算法笔记》
+
+using namespace std;
+int card[109];
+vector <int> order;
+
+int main()
+{
+	//初始化：100:S,200:H,300:C,400:D,500:J
+	card[0] = 0;
+	for (int i = 1; i < 14; i++){
+		card[i] = 100 + i;
+		card[i+54] = 100 + i;
+	}
+		
+	for (int i = 14; i < 27; i++){
+		card[i] = 200 + i - 13;
+		card[i+54] = 200 + i - 13;
+	}
+		
+	for (int i = 27; i < 40; i++){
+		card[i] = 300 + i - 26;
+		card[i+54] = 300 + i - 26;
+	}
+		
+	for (int i = 40; i < 53; i++){
+		card[i] = 400 + i - 39;
+		card[i+54] = 400 + i - 39;
+	}
+	card[53] = 501;
+	card[54] = 502;
+	card[53+54] = 501;
+	card[54+54] = 502;
+
+	int n;
+	scanf("%d", &n);
+
+
+	for (int i = 0; i < n; i++){
+		if (!i){
+			for (int num = 1; num < 55; num++){
+				int order_num;
+				scanf("%d", &order_num);
+				order.push_back(order_num);
+			}
+		}
+		int j = 1;
+		for (vector<int>::iterator it = order.begin(); it != order.end(); it++){
+			card[*it + 54] = card[j];
+			j++;
+		}
+		
+		for (int num = 1; num < 55; num++){
+			 card[num] = card[num + 54];
+		}
+	}
+
+	for (int num = 1; num < 55; num++){
+		int type = card[num] / 100;
+		int yu = card[num] % 100;
+		switch (type){
+		case 1:
+			printf("S");
+			printf("%d",yu);
+			break;
+		case 2:
+			printf("H");
+			printf("%d", yu);
+			break;
+		case 3:
+			printf("C");
+			printf("%d", yu);
+			break;
+		case 4:
+			printf("D");
+			printf("%d", yu);
+			break;
+		case 5:
+			printf("J");
+			printf("%d", yu);
+			break;
+		}
+		if (num != 54)
+			printf(" ");
+
+	}
+	system("pause");
+}
+

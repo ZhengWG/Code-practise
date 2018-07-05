@@ -1,0 +1,65 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#define MAX 10011
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int a, b;
+
+struct Per{
+	string name;
+	string id;
+	int grade;
+};
+vector<Per> pers;
+bool cmp(Per per1, Per per2){
+	return per1.grade > per2.grade;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	int ma = -1;
+	int mi = 101;
+	for (int i = 0; i < n; i++){
+		Per per1;
+		cin >> per1.name >> per1.id >> per1.grade;
+		pers.push_back(per1);
+		if (per1.grade > ma)
+			ma = per1.grade;
+		if (per1.grade < mi)
+			mi = per1.grade;
+	}
+	scanf("%d%d", &a, &b);
+	sort(pers.begin(), pers.end(), cmp);
+	if (a>b || a > ma || b < mi){
+		printf("NONE\n");
+	}
+	else{
+		vector <Per> out;
+		for (int i = 0; i < pers.size(); i++){
+			if (pers[i].grade >= a && pers[i].grade <= b){
+				out.push_back(pers[i]);
+			}
+		}
+		if (!out.size()){
+			printf("NONE\n");
+		}
+		else{
+			for (int i = 0; i < out.size(); i++){
+				printf("%s %s\n", out[i].name.c_str(), out[i].id.c_str());
+			}
+		}
+	}
+
+	system("pause");
+	return 0;
+}

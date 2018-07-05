@@ -1,0 +1,89 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <algorithm>
+#include <vector>
+#define MAX 100010
+#pragma warning(disable:4996)
+using namespace std;
+
+int n;
+vector<int> num_max;
+vector<int> num_min;
+bool cmp1(int num1, int num2){
+	return num1 > num2;
+}
+
+bool cmp2(int num1, int num2){
+	return num1 < num2;
+}
+
+int Change(int num, bool flag){
+	if (flag){
+		//大
+		vector<int> out;
+		int k = 10;
+		while (num){
+			out.push_back(num % k);
+			num = num / k;
+		}
+		while (out.size() != 4){
+			out.push_back(0);
+		}
+		sort(out.begin(), out.end(), cmp1);
+		return out[3] * 1000 + out[2] * 100 + out[1] * 10 + out[0];
+	}
+	else{
+		//xiao
+		vector<int> out;
+		int k = 10;
+		while (num){
+			out.push_back(num % k);
+			num = num / k;
+		}
+		while (out.size() != 4){
+			out.push_back(0);
+		}
+		sort(out.begin(), out.end(), cmp2);
+		return out[3] * 1000 + out[2] * 100 + out[1] * 10 + out[0];
+	}
+}
+
+bool judge(int num){
+	//大
+	vector<int> out;
+	int k = 10;
+	while (num){
+		out.push_back(num % k);
+		num = num / k;
+	}
+	while (out.size() != 4){
+		out.push_back(0);
+	}
+	if (out[0] == out[1] && out[2] == out[3] && out[1] == out[2])
+		return true;
+	else
+		return false;
+}
+
+int main()
+{	
+	scanf("%d", &n);
+	int flag = judge(n);
+	if (flag)
+		printf("%04d - %04d = 0000\n", n, n);
+	else{
+		int a, b;
+		do{
+			b = Change(n, 1);
+			a = Change(n, 0);
+			n = a - b;
+			printf("%04d - %04d = %04d\n", a, b, n);
+		} while (n != 6174);
+	}
+
+	system("pause");
+	return 0;
+}

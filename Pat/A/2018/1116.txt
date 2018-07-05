@@ -1,0 +1,72 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 10010
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n, k;
+int vis[MAX];
+bool checked[MAX];
+int ranks[MAX];
+
+bool Judge(int num){
+	if (num == 1)
+		return false;
+	if (num == 2)
+		return true;
+	for (int i = 2; i <= sqrt(num); i++){
+		if (num%i == 0)
+			return false;
+	}
+	return true;
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		int id;
+		scanf("%d", &id);
+		vis[id] = 1;
+		ranks[id] = i + 1;
+	}
+	scanf("%d", &k);
+	for (int i = 0; i < k; i++){
+		int id;
+		scanf("%d", &id);
+		if (vis[id]){
+			if (checked[id]){
+				printf("%04d: Checked\n", id);
+			}
+			else{
+				if (ranks[id] == 1){
+					printf("%04d: Mystery Award\n", id);
+					checked[id] = 1;
+				}
+				else if (Judge(ranks[id])){
+					printf("%04d: Minion\n", id);
+					checked[id] = 1;
+				}
+				else{
+					printf("%04d: Chocolate\n", id);
+					checked[id] = 1;
+				}
+			}
+		}
+		else{
+			printf("%04d: Are you kidding?\n", id);
+		}
+	}
+
+	system("pause");
+	return 0;
+}

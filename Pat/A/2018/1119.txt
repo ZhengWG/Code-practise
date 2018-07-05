@@ -1,0 +1,68 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+#include <map>
+#include <set>
+#include <queue>
+#include <stack>
+#define MAX 35
+#define INF 999999999
+#pragma warning (disable:4996)
+using namespace std;
+int n;
+int Pre[MAX];
+int Post[MAX];
+vector<int> in;
+bool uni = 1;
+
+void Get(int preL, int preR, int postL, int postR){
+	if (preL == preR){
+		in.push_back(Pre[preL]);
+		return;
+	}
+	if (Post[postR] == Pre[preL]){
+		int k;
+		for (k = preL + 1; k <= preR; k++){
+			if (Pre[k] == Post[postR - 1])
+				break;
+		}
+		if (k > preL + 1){
+			int num_left = k - preL - 1;
+			Get(preL + 1, k - 1, postL, postL + num_left - 1);
+			in.push_back(Post[postR]);
+			Get(k, preR, postL + num_left, postR - 1);
+		}
+		else{
+			uni = 0;
+			int num_left = k - preL - 1;
+			in.push_back(Post[postR]);
+			Get(k, preR, postL + num_left, postR - 1);
+		}
+	}
+}
+
+int main()
+{
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++){
+		scanf("%d", &Pre[i]);
+	}
+	for (int i = 0; i < n; i++){
+		scanf("%d", &Post[i]);
+	}
+	Get(0, n - 1, 0, n - 1);
+	printf("%s\n", uni ? "Yes" : "No");
+	for (int i = 0; i < in.size(); i++){
+		if (i == in.size() - 1)
+			printf("%d\n", in[i]);
+		else
+			printf("%d ", in[i]);
+	}
+
+	system("pause");
+	return 0;
+}

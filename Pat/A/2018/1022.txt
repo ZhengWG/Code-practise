@@ -1,0 +1,110 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+#include "stdafx.h"
+#include <iostream>
+#include <algorithm>
+#include <string.h>
+#include <vector>
+#pragma warning(disable:4996)
+#define MAX 10010
+using namespace std;
+int n, m;
+int nums[MAX];
+string queries[MAX];
+struct Book{
+	string id;
+	string title;
+	string author;
+	vector<string> keys;
+	string pub;
+	string year;
+}books[MAX];
+
+bool Findkey(vector<string> words, string word){
+	for (vector<string>::iterator it = words.begin(); it != words.end(); it++){
+		if (*it == word)
+			return true;
+	}
+	return false;
+}
+
+void Search(string word){
+	bool flag = false;
+	for (int i = 0; i < n; i++){
+		if (books[i].id == word){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+		if (books[i].title == word){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+		if (books[i].author == word){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+		if (books[i].pub == word){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+		if (books[i].year == word){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+		if (Findkey(books[i].keys, word)){
+			flag = true;
+			printf("%s\n", books[i].id.c_str());
+		}
+	}
+	if (!flag)
+		printf("Not Found\n");
+	return;
+}
+
+bool cmp(Book book1, Book book2){
+	return book1.id < book2.id;
+}
+
+int main(){
+	scanf("%d", &n);
+	getchar();
+	for (int i = 0; i < n; i++){
+		char id[8];
+		char title[81];
+		char author[81];
+		char pub[81];
+		char year[5];
+		gets(id);
+		gets(title);
+		gets(author);
+		do{
+			char key[11];
+			scanf("%s", key);
+			books[i].keys.push_back(key);
+		} while (getchar() != '\n');
+		gets(pub);
+		gets(year);
+		books[i].id = id;
+		books[i].title = title;
+		books[i].author = author;
+		books[i].pub = pub;
+		books[i].year = year;
+	}
+	sort(books, books + n, cmp);
+
+	scanf("%d", &m);
+	for (int i = 0; i < m; i++){
+		char query[100];
+		scanf("%d: ", &nums[i]);
+		gets(query);
+		queries[i] = query;
+	}
+
+	for (int i = 0; i < m; i++){
+		printf("%d: %s\n", nums[i], queries[i].c_str());
+		Search(queries[i]);
+	}
+
+	system("pause");
+	return 0; 
+}

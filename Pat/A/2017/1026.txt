@@ -1,0 +1,141 @@
+#include <cstdio>  
+#include <cstring>  
+#include <iostream>  
+#include <algorithm>  
+#include <queue>  
+#include <string>  
+//≥¨º∂∏¥‘”
+using namespace std;
+
+struct node{
+	int arrive_time, serve_time;
+	int id, play;
+	bool operator<(const node & X) const{
+		return arrive_time > X.arrive_time;
+	}
+}customer[10010];
+
+struct table{
+	int id, vip, cnt, finish_time;
+	bool operator<(const table & X) const{
+		if (vip == X.vip) return id < X.id;
+		return vip > X.vip;
+	}
+};
+
+int get_time(const string & str) {
+	int total = 0;
+	total = (str[6] - '0') * 10 + str[7] - '0';
+	total += ((str[3] - '0') * 10 + str[4] - '0') * 60;
+	total += ((str[0] - '0') * 10 + str[1] - '0') * 3600;
+	return total;
+}
+
+void to_time(const int & x) {
+	printf("%02d:%02d:%02d ", x / 3600, (x % 3600) / 60, x % 60);
+}
+
+bool cmp(const node & a, const node & b){
+	if (a.serve_time == b.serve_time) return a.arrive_time < b.arrive_time;
+	return a.serve_time < b.serve_time;
+}
+
+int main() {
+	int n;
+	scanf("%d", &n);
+
+	priority_queue<node> ord, vip;
+	for (int i = 0; i < n; ++i) {
+		string str;
+		int tag;
+		cin >> str >> customer[i].play >> tag;
+		if (customer[i].play > 120) customer[i].play = 120;
+		customer[i].play *= 60;
+		customer[i].arrive_time = get_time(str);
+		customer[i].id = i;
+		if (tag) vip.push(customer[i]);
+		else ord.push(customer[i]);
+	}
+	node tmp = { 22 * 60 * 60, 0, 0, 0 };
+	vip.push(tmp);
+	ord.push(tmp);
+
+	int k, m;
+	scanf("%d%d", &k, &m);
+	vector<table> Table;
+	for (int i = 0; i < k; ++i) {
+		table tmp = { i, 0, 0, 0 };
+		Table.push_back(tmp);
+	}
+	for (int i = 0; i < m; ++i) {
+		int id;
+		scanf("%d", &id);
+		Table[id - 1].vip = 1;
+	}
+
+	sort(Table.begin(), Table.end());
+	int fp[110];
+
+	for (int i = 0; i < k; ++i)
+		fp[Table[i].id] = i;
+
+	for (int cur_time = 8 * 60 * 60; cur_time < 21 * 60 * 60; ++cur_time) {
+		while (vip.top().arrive_time <= cur_time) {
+			int i;
+			for (i = 0; i < m; ++i) {
+				if (cur_time >= Table[i].finish_time) {
+					int id = vip.top().id;
+					vip.pop();
+					customer[id].serve_time = cur_time;
+					Table[i].finish_time = cur_time + customer[id].play;
+					Table[i].cnt++;
+					break;
+				}
+			}
+			if (i == m) break;
+		}
+		for (int i = 0; i < k; ++i) {
+			if (cur_time >= Table[fp[i]].finish_time) {
+				int id;
+				if (vip.top().arrive_time < ord.top().arrive_time) {
+					if (vip.top().arrive_time <= cur_time) {
+						id = vip.top().id;
+						vip.pop();
+					}
+					else
+						continue;
+				}
+				else {
+					if (ord.top().arrive_time <= cur_time) {
+						id = ord.top().id;
+						ord.pop();
+					}
+					else
+						continue;
+				}
+
+				customer[id].serve_time = cur_time;
+				Table[fp[i]].finish_time = cur_time + customer[id].play;
+				Table[fp[i]].cnt++;
+			}
+		}
+	}
+
+	sort(customer, customer + n, cmp);
+
+	for (int i = 0; i < n; ++i) {
+		if (customer[i].serve_time == 0) continue;
+		to_time(customer[i].arrive_time);
+		to_time(customer[i].serve_time);
+		printf("%d\n", (customer[i].serve_time - customer[i].arrive_time + 30) / 60);
+	}
+
+	int num[110];
+	for (int i = 0; i < k; ++i)
+		num[Table[i].id] = Table[i].cnt;
+
+	for (int i = 0; i < k; ++i)
+		printf("%d%c", num[i], i == k - 1 ? '\n' : ' ');
+
+	return 0;
+}

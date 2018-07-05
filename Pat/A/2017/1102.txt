@@ -1,0 +1,100 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <string.h>
+#define MAX 11
+#pragma warning(disable:4996)
+
+using namespace std;
+
+typedef struct Node* Pnode;
+struct Node{
+	int num;
+	Pnode lchild;
+	Pnode rchild;
+	Node(){
+		lchild = NULL;
+		rchild = NULL;
+	}
+};
+
+int vis[MAX];
+void Layer(vector<Pnode> tree, int root){
+	int num_root = root;
+	queue<int> q;
+	q.push(num_root);
+	while (!q.empty()){
+		int num = q.front();
+		if (num == root)
+			printf("%d", num);
+		else
+			printf(" %d", num);
+		q.pop();
+		if (tree[num]->lchild != NULL)
+			q.push(tree[num]->lchild->num);
+		if (tree[num]->rchild != NULL)
+			q.push(tree[num]->rchild->num);
+	}
+}
+
+int num_time = 0;
+
+void inorder(vector<Pnode> tree, int root){
+	
+	if (tree[root] == NULL)
+		return;
+	if (tree[root]->lchild != NULL)
+		inorder(tree, tree[root]->lchild->num);
+	num_time++;
+	if (num_time == 1)
+		printf("%d", root);
+	else
+		printf(" %d", root);
+	if (tree[root]->rchild != NULL)
+		inorder(tree, tree[root]->rchild->num);
+
+	return;
+
+}
+int n;
+int root[MAX];
+int main(){
+	scanf("%d", &n);
+
+	vector<Pnode> Tree;
+	Tree.resize(n);
+	for (int i = 0; i<n; i++){
+		Tree[i] = new Node;
+		Tree[i]->num = i;
+	}
+	memset(root, 0, sizeof(root));
+	for (int i = 0; i<n; i++){
+		getchar();
+		char w1;
+		char w2;
+		scanf("%c %c", &w1, &w2);
+		if (w1 != '-'){
+			Tree[i]->rchild = Tree[w1 - '0'];
+			root[w1 - '0'] = 1;
+		}
+		if (w2 != '-'){
+			root[w2 - '0'] = 1;
+			Tree[i]->lchild = Tree[w2 - '0'];
+		}	
+	}
+
+	int num_root;
+	for (int i = 0; i < n; i++){
+		if (root[i] == 0){
+			num_root = i;
+			break;
+		}
+	}
+
+	Layer(Tree, num_root);
+	printf("\n");
+	inorder(Tree, num_root);
+
+	system("pause");
+	return 0;
+}
