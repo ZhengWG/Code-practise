@@ -1,0 +1,63 @@
+* 题目地址
+
+* 题目描述
+
+* 思路
+题意:给定给定二叉树，替换二叉树的所有左右子树
+思路:利用堆栈，压入节点，调换所有节点的左右子树
+代码:
+class TreeNode:
+    def __init__(self, value, l = None, r = None):
+        self.val = value
+        self.left = l
+        self.right = r
+
+
+def createBinaryTree(input):
+    if not len(input):
+        root = None
+        return root
+    if input[0] is not None:
+        root = TreeNode(input[0])
+        input.pop(0)
+        root.left = createBinaryTree(input)
+        root.right = createBinaryTree(input)
+        return root
+    else:
+        input.pop(0)
+        root = None
+        return root
+
+
+def Preorder(root):
+    if root is not None:
+        result.append(root.val)
+        Preorder(root.left)
+        Preorder(root.right)
+
+
+def revertTree(root):
+    if root is None:
+        return
+    stack = [root]
+    while len(stack):
+        node = stack.pop(0)
+        node.left, node.right = node.right, node.left
+        if node.left is not None:
+            stack.append(node.left)
+        if node.right is not None:
+            stack.append(node.right)
+    return root
+
+
+if __name__ == '__main__':
+    #输入按照先序输入，且以None为终止标志
+    data_input = [4, 2, 1, None, None, 3, None, None, 7, 6, None, None, 9, None, None]
+    tree1 = createBinaryTree(data_input)
+    result = []
+    Preorder(tree1)
+    print("ori order is {}".format(result))
+    revertTree(tree1)
+    result = []
+    Preorder(tree1)
+    print("revert order is {}".format(result))
