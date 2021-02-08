@@ -22,9 +22,9 @@ for 状态1 in 状态1的所有可选值:
 # 数列组成:arr[n] = arr[n-1] + arr[n-2], arr[0] = arr[1] = 1
 def fib(num):
     """
-    常规递归解法
-    时间复杂度: O(2^n),存在2^n子问题(二叉树结构),子问题时间复杂度为加法操作O(1)
-    算法问题:存在重复计算:f(n-1)需要计算f(n-2),f(n-3),f(n-2)又会重复计算f(n-3)
+    @brief      常规递归解法
+                时间复杂度: O(2^n),存在2^n子问题(二叉树结构),子问题时间复杂度为加法操作O(1)
+                算法问题:存在重复计算:f(n-1)需要计算f(n-2),f(n-3),f(n-2)又会重复计算f(n-3)
     """
     if num in (1, 2):
         return 1
@@ -46,9 +46,9 @@ def build_help(helper, num):
 
 def fib_with_helper(num):
     """
-    构建备忘录(helper)辅助计算
-    时间复杂度: O(n),进行了子树的剪枝操作,2^n->n,子问题时间复杂度为加法操作O(1)
-    算法说明:自顶而上计算
+    @brief      构建备忘录(helper)辅助计算
+                时间复杂度: O(n),进行了子树的剪枝操作,2^n->n,子问题时间复杂度为加法操作O(1)
+                算法说明:自顶而上计算
     """
     # helper初始值:None
     helper = [None] * num
@@ -57,9 +57,9 @@ def fib_with_helper(num):
 
 def fib_with_dp(num):
     """
-    构建dp_table辅助计算
-    时间复杂度:O(n),最基本的状态转移方程:f(n)=f(n-1)+f(n-2),n>2
-    算法说明:自底而上计算
+    @brief      构建dp_table辅助计算
+                时间复杂度:O(n),最基本的状态转移方程:f(n)=f(n-1)+f(n-2),n>2
+                算法说明:自底而上计算
     """
     # 初始化前2初始值
     dp_table = [1] * 2
@@ -82,10 +82,11 @@ def fib_with_dp(num):
 
 def coinchange(coins, amount):
     """
-    直接递归暴力解法
-    coins: c_1,...,c_k 硬币币值
-    amount: 目标金额
-    时间复杂度: 本质是N叉树迭代,层数为n^k,每层计算量为O(k),故时间复杂度为O(k*n^k),还是存在重复计算
+    @brief      直接递归暴力解法
+                时间复杂度: 本质是N叉树迭代,层数为n^k,每层计算量为O(k),故时间复杂度为O(k*n^k),还是存在重复计算
+
+    @param      coins(list): c_1,...,c_k 硬币币值
+                amount(int): 目标金额
     """
     # 不断递归的dp函数
     def dp(n):
@@ -115,10 +116,11 @@ def coinchange(coins, amount):
 
 def coinchange_withmem(coins, amount):
     """
-    带备忘
-    coins: c_1,...,c_k 硬币币值
-    amount: 目标金额
-    时间复杂度: 剪枝后层数为O(n),每层计算量为O(k),故时间复杂度为O(k*n)
+    @brief      带备忘解法
+                时间复杂度: 剪枝后层数为O(n),每层计算量为O(k),故时间复杂度为O(k*n)
+
+    @param      coins(list): c_1,...,c_k 硬币币值
+                amount(int): 目标金额
     """
     # 初始化备忘: dict
     mem = dict()
@@ -156,11 +158,12 @@ def coinchange_withmem(coins, amount):
 
 def coinchange_iter(coins, amount):
     """
-    递归解法
-    coins: c_1,...,c_k 硬币币值
-    amount: 目标金额
-    思路: 维护dp表, dp[i]意味着目标值为i时需要的最小金币值
-    时间复杂度: O(k*n)
+    @brief      递归解法
+                思路: 维护dp表, dp[i]意味着目标值为i时需要的最小金币值
+                时间复杂度: O(k*n)
+
+    @param      coins(list): c_1,...,c_k 硬币币值
+                amount(int): 目标金额
     """
     dp_table = [float('INF')] * (amount + 1)
     # dp_table[0]表示金额为0

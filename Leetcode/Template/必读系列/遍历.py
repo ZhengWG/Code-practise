@@ -18,7 +18,7 @@ def do_something(a):
 
 def traverse_arr(list_arr):
     """
-    数组遍历
+    @brief      数组遍历
     """
     for mem_arr in list_arr:
         # do something
@@ -27,7 +27,7 @@ def traverse_arr(list_arr):
 
 class ListNode():
     """
-    简单的链表类
+    @brief      简单的链表类
     """
 
     def __init__(self, value, next_node=None):
@@ -37,7 +37,7 @@ class ListNode():
 
 def traverse_listnode_iter(head):
     """
-    迭代遍历链表
+    @brief      迭代遍历链表
     """
     node = head
     while node is not None:
@@ -47,7 +47,7 @@ def traverse_listnode_iter(head):
 
 def traverse_listnode_recur(head):
     """
-    递归遍历链表
+    @brief      递归遍历链表
     """
     if head is None:
         return
@@ -57,7 +57,7 @@ def traverse_listnode_recur(head):
 
 class BiTreeNode():
     """
-    简单的二叉树节点
+    @brief      简单的二叉树节点
     """
 
     def __init__(self, value, left_node=None, right_node=None):

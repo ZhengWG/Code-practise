@@ -35,7 +35,7 @@ res_queens = []
 
 def permute(nums):
     """
-    全排列主函数：输入一组不重复的数字，返回他们的全排列
+    @brief      全排列主函数：输入一组不重复的数字，返回他们的全排列
     """
     track = []
     backtrack(nums, track)
@@ -62,8 +62,8 @@ def backtrack(nums, track):
 
 def solveQueens(num):
     """
-    八皇后问题:输入棋盘边长为num*num,返回所有合法的布置
-    八皇后限制:周围一圈8个位置不能存在其他旗子
+    @brief      八皇后问题:输入棋盘边长为num*num,返回所有合法的布置
+                八皇后限制:周围一圈8个位置不能存在其他旗子
     """
     # *:无棋子,Q:有棋子
     # 二维数组初始化的时候*只会复制list对象,会有问题
@@ -76,7 +76,7 @@ def solveQueens(num):
 # 辅助判断函数
 def is_valid_queen(track, row, col):
     """
-    判断当前位置是否为符合要求的棋子位置
+    @brief      判断当前位置是否为符合要求的棋子位置
     """
     for shift_x in [-1, 0, 1]:
         for shift_y in [-1, 0, 1]:
