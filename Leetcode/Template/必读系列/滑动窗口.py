@@ -13,7 +13,7 @@ while (right < len(a_s)):
     right += 1
 
     while (valid):
-        windows[a_s[right]] -= 1
+        windows[a_s[left]] -= 1
         left += 1
 '''
 

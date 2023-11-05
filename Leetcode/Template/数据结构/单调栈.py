@@ -25,7 +25,7 @@ def nextGreatElement(nums: list):
     # 倒着入栈
     for i in range(len(nums)):
         idx = len(nums) - 1 - i
-        # 判断数目大小：仅保留更大的元素
+        # 判断数目大小：单调栈中仅保留比当前nums[idx]更大的元素:原因是更小的元素会被压缩不会用到
         while (len(stack_s) and stack_s[len(stack_s) - 1] <= nums[idx]):
             stack_s.pop()
 

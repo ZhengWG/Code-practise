@@ -57,14 +57,13 @@ def dp_trap(heights):
     table_r = deepcopy(heights)
 
     # 计算table_l: O(n)
-    for idx in range(len(heights)):
-        l_idx = len(heights) - idx - 1
-        table_l[l_idx] = max(table_l[l_idx:])
+    for idx in range(1, len(heights)):
+        table_l[idx] = max(heights[idx], table_l[idx - 1])
 
     # 计算table_r: O(n)
-    for idx in range(len(heights)):
-        r_idx = idx
-        table_r[r_idx] = max(table_r[:r_idx + 1])
+    for idx in range(len(heights) - 1):
+        r_idx = len(heights) - idx - 1
+        table_r[r_idx] = max(heights[r_idx], table_r[r_idx + 1])
 
     # 根据table计算蓄水量
     for idx in range(len(heights)):

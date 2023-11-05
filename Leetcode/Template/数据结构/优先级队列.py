@@ -91,11 +91,11 @@ class MaxPQ:
         while (left(k) <= self.num):
             # 判断左右节点和当前节点大小:找更小的节点下沉
             sinked_idx = 0
-            if self.pq[k] < self.pq[left(k)]:
+            if self.pq[k] > self.pq[left(k)]:
                 sinked_idx = left(k)
 
-            # 如果右节点存在并且大于左节点
-            if self.pq[left(k)] < self.pq[right(k)]:
+            # 如果右节点存在并且大于左节>
+            if right(k) <= self.num and self.pq[left(k)] > self.pq[right(k)] and self.pq[right(k)] < self.pq[k]:
                 sinked_idx = right(k)
 
             if not sinked_idx:
@@ -112,12 +112,6 @@ class MaxPQ:
         tmp = self.pq[i]
         self.pq[i] = self.pq[j]
         self.pq[j] = tmp
-
-    def less(self, i: int, j: int):
-        """
-        @brief      判断i对应的元素是否比j对应的元素小
-        """
-        return self.pq[i] < self.pq[j]
 
 
 if __name__ == '__main__':
