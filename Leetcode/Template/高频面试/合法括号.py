@@ -32,7 +32,6 @@ class Stack(object):
         """
         return self.stack[-1]
 
-
 def isValid(input_s):
     """
     @brief      判断字符串的括号是否合法

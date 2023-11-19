@@ -136,10 +136,10 @@ class Solution3:
         return self.post_order
 
     def traverse(self, s, record=False):
-        if self.visited[s] or not self.can_finish:
-            return
         if self.op_path[s]:
             self.can_finish = False
+            return
+        if self.visited[s] or not self.can_finish:
             return
 
         self.visited[s] = True
@@ -150,3 +150,56 @@ class Solution3:
             self.post_order.append(s)
         self.op_path[s] = False
 
+class Solution4:
+    """
+    获取关键路径
+    """
+    def get_critical_path(self, ALGraph G):
+        """
+        G为邻接表存储的有向图，输出G的各项关键活动：事件最早发生的事件=最晚发生的事件
+        参考：https://blog.csdn.net/m0_46518461/article/details/109725629
+        Des：
+         1. 获取拓扑排序
+         2. 正向排序得到各个事件的最早发生事件
+         3. 逆向排序得到各个事件的最晚发生事件
+         4. 基于最早最晚事件判断是否为关键活动
+        """
+        # 拓扑排序
+        if (!get_topo(G, topo)):
+            return
+
+        # 按照正向拓扑排序得到每个事件的最早发生时间
+        for i in range(n):
+            ve[i] = 0  # 初始化
+        for i in range(n):
+            node_idx = topo[i] # 获取拓扑排序顶点
+            node = G[node_idx]
+            while node is not None:
+                j = node.next_idx
+                if ve[j] < ve[i] + node.weight:
+                    ve[j] = ve[i] + node.weight
+                node = G[j]
+
+        # 按照逆向拓扑排序得到每个事件的最晚发生时间
+        for i in range(n):
+            vl[i] = ve[n-1]
+        for i in range(n-1, -1, -1):
+            # 逆向拓扑
+            node_idx = topo[i]
+            node = G[node_idx]
+            while node is not None:
+                j = node.next_idx
+                if vl[node_idx] > vl[j] - node.weight:
+                    vl[node_idx] = vl[j] - node.weight
+                node = G[j]
+
+        # 判断活动是否为关键活动: ve[i] + weight = vl[i]
+        for i in range(n):
+            node = G[i]
+            while node is not None:
+                j = node.next_idx
+                e = ve[i]
+                l = vl[j] - node.weight
+                if e == l:
+                    print(f"关键路径：{{G[i].data}/{G[j].data}")
+                node = G[j]
