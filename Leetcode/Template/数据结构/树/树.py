@@ -91,7 +91,7 @@ def postorder(node):
 
 # TODO 遍历方式：迭代
 # 二叉查找树（BST）
-# 平衡二叉树（AVL）
+
 
 
 if __name__ == '__main__':

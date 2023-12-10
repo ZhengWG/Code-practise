@@ -42,7 +42,7 @@ def violent_trap(heights):
 
 
 def dp_trap(heights):
-    """
+
     @brief      接雨水备忘录解法: 时间复杂度:O(n),空间复杂度可优化
 
     @details    https://leetcode-cn.com/problems/trapping-rain-water/

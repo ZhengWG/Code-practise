@@ -11,6 +11,7 @@ import math
 
 
 def isPrime(n):
+
     """
     @brief      判断是否为素数
     """

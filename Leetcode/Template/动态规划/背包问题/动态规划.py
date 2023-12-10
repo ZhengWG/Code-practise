@@ -150,7 +150,7 @@ def coinchange_withmem(coins, amount):
             res = min(res, 1 + subproblem)
 
         # 得到最终结果后, 更新备忘
-        mem[n] = res if res != float('INF') else -1
+        mem[n] = res if res != float('INF')
         return res if res != float('INF') else -1
 
     return dp(amount)

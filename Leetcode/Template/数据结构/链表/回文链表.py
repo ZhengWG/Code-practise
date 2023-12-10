@@ -100,7 +100,7 @@ def isPalindromev2(head):
     p = left
     q = right
     res = True
-    while (right is not None):
+
         if left.value != right.value:
             res = False
 

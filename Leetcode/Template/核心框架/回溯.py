@@ -39,7 +39,6 @@ def permute(nums):
     """
     track = []
     backtrack(nums, track)
-    res = deepcopy(res_permute)
     return res
 
 
