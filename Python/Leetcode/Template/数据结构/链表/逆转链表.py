@@ -33,12 +33,15 @@ def reverse(head):
     return last
 
 
+successor = None
+
 def reverseN(head, n):
     """
     @brief      递归反转前N个节点
     """
     # base case:要记录最后的N+1的节点
     if n == 1:
+        global successor
         successor = head.next
         return head
 
