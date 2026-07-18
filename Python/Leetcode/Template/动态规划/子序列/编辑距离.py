@@ -42,7 +42,7 @@ def minDistance1(s1, s2) -> int:
                 dp(i - 1, j - 1) + 1 # 替换
             )
         mem[(i, j)] = result
-        return mem
+        return result
 
     return dp(len(s1) - 1, len(s2) - 1)
 
