@@ -498,17 +498,44 @@ class PagedKVPool:
         return self.used / self.n_blocks
 
 class RadixNode:
+    """
+    为什么用 Radix Tree（压缩前缀树），而不是朴素 Trie / 全序列 Hash：
+      · 跨请求共享 KV：多条 prompt 常共享 system / few-shot / 对话前缀；树边存的
+        `blocks` 指向 PagedKVPool 里同一批物理 block，靠 refcount 共享，避免重复 prefill。
+      · 相对「每 token 一节点」的 Trie：无分叉的路径压成一条边上的 `tokens[]`，
+        节点数 ≈ 分叉点个数，深度与内存都更省（Radix = Patricia / compressed trie）。
+      · 相对「整段 token 序列 → KV」的 HashMap：只能 exact hit；Radix 支持最长前缀
+        匹配，并在分叉处 split 节点，新请求只需补算未命中后缀。
+      · 与 PagedAttention 配套：逻辑前缀 ↔ 物理 block 列表一一对应；父子边天然表达
+        「父 KV 是子 KV 的前缀」→ 驱逐必须自叶子向上（见 evict_lru）。
+
+    节点字段：
+      children[first_token] → 子边；tokens / blocks 是该边上的标签与对应 KV block id。
+
+    整体算法与复杂度（令 L=本次序列长，N=树节点数，U=树上已存的唯一 token 总量）：
+      match / insert：沿路径逐 token 比较，每 token 至多看一次 → 时间 O(L)；
+        insert 遇分叉最多 split 一次，切边 O(边长) ⊆ O(L)。
+      空间：每条边的 tokens/blocks 各存一份，共享前缀只占一份 → O(U)；
+        节点数 O(分叉点) ≪ 朴素 Trie 的 O(U)。
+      evict_lru：收集叶子 O(N) + 按 last_access 排序 O(N log N) + 释放 O(要腾的 block 数)；
+        正确性约束：只能删叶子（父边仍被子请求引用）。
+      命中收益：命中前缀长度 M 时跳过 M token 的 prefill（算力/带宽），代价是树维护
+        与一次 O(L) 查找 —— 典型 serving 下远小于重算注意力。
+    """
     __slots__ = ('children', 'tokens', 'blocks', 'parent', 'last_access', 'lock')
 
     def __init__(self, parent=None):
         self.children = {}          # first_token -> RadixNode
-        self.tokens = []            # 这条边上的 token 序列
-        self.blocks = []            # 对应的 KV block id
+        self.tokens = []            # 这条边上的 token 序列（压缩路径，非单 token）
+        self.blocks = []            # 对应的 KV block id（与 tokens 按 PAGE 对齐）
         self.parent = parent
         self.last_access = time.time()
         self.lock = 0               # ★ 正在被 running 请求使用 → 不可驱逐
 
 class RadixTree:
+    """
+    前缀匹配 + 插入分裂 + LRU 叶子驱逐。算法细节见各方法；复杂度总览见 RadixNode。
+    """
     def __init__(self, pool: PagedKVPool):
         self.root = RadixNode()
         self.pool = pool
@@ -522,7 +549,7 @@ class RadixTree:
         return i
 
     def match(self, tokens):
-        """返回 (命中长度, 命中的 block 列表, 停在哪个节点)"""
+        """最长前缀匹配。返回 (命中长度, 命中的 block 列表, 停在哪个节点)。O(L)。"""
         node, idx, blocks = self.root, 0, []
         while idx < len(tokens):
             ch = node.children.get(tokens[idx])
@@ -539,7 +566,7 @@ class RadixTree:
         return idx, blocks, node
 
     def insert(self, tokens, blocks):
-        """插入一条完整序列。已存在的前缀会被复用（incref）。"""
+        """插入完整序列；已有前缀复用（物理块靠 pool.incref）。最坏 O(L)，含一次 split。"""
         node, idx = self.root, 0
         while idx < len(tokens):
             first = tokens[idx]
@@ -566,7 +593,7 @@ class RadixTree:
         return
 
     def evict_lru(self, n_blocks):
-        """★ LRU 驱逐：只能从叶子开始（父节点的 KV 是子节点的前缀，不能先删）"""
+        """★ LRU 驱逐：只能从叶子开始（父节点的 KV 是子节点的前缀，不能先删）。O(N log N)。"""
         leaves = []
 
         def collect(n):
